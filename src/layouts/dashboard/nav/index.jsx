@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+import { auth } from '../../../firebase/firebaseConfig';
 // mock
-import account from '../../../_mock/account';
+
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 // components
@@ -14,7 +15,8 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
-
+import avtimg from '../../../assets/avatar_default.jpg'
+import { AuthContext } from '../../../context/AuthContext';
 // ----------------------------------------------------------------------
 
 const NAV_WIDTH = 280;
@@ -36,7 +38,7 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
-
+  const {currentUser} = useContext(AuthContext);
   const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
@@ -60,17 +62,28 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={account.photoURL} alt="photoURL" />
-
+          <Avatar src={currentUser.photoURL ? currentUser.photoURL : avtimg} alt="photoURL" />
+          {currentUser ? (
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+              {currentUser.displayName}
               </Typography>
 
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} >
+              Admin
               </Typography>
             </Box>
+
+          ) : (
+            <Box sx={{ ml: 2 }}>
+
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} >
+              Loading...
+              </Typography>
+            </Box>
+
+          )}
+
           </StyledAccount>
         </Link>
       </Box>

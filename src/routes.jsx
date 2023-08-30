@@ -6,13 +6,13 @@ import SimpleLayout from './layouts/simple';
 import BlogPage from './pages/BlogPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage'
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import { AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 import { auth } from './firebase/firebaseConfig';
-import ProtectedRoute from './ProtectedRoute';
 // ----------------------------------------------------------------------
 
 
@@ -35,6 +35,10 @@ export default function Router() {
     {
       path: 'login',
       element: <LoginPage />,
+    },
+    {
+      path: 'register',
+      element: <RegisterPage />,
     },
     {
       element: <SimpleLayout />,

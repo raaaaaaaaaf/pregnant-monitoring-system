@@ -12,30 +12,21 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
-    title: 'Patients',
+    title: 'Add Pregnant',
     path: '/dashboard/user',
     icon: icon('ic_user'),
   },
   {
-    title: 'Doctors',
+    title: 'Pregnant Records',
     path: '/dashboard/products',
     icon: icon('ic_cart'),
   },
   {
-    title: 'Staffs',
+    title: 'Goals',
     path: '/dashboard/blog',
     icon: icon('ic_blog'),
   },
-  {
-    title: 'Records',
-    path: '/login',
-    icon: icon('ic_lock'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+
 ];
 
 export default navConfig;

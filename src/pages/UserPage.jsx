@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import {
   Card,
@@ -21,6 +21,12 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  Dialog,
+  DialogActions, 
+  DialogContent, 
+  DialogTitle, 
+  TextField,
+
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -30,16 +36,22 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+import { db } from '../firebase/firebaseConfig';
+import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import avt from '../assets/avatar_default.jpg'
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
+  { id: 'age', label: 'Age', alignRight: false },
+  { id: 'dob', label: 'Date of Birth', alignRight: false },
+  { id: 'cp', label: 'Contact No.', alignRight: false },
+  { id: 'act', label: 'Action', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -76,6 +88,8 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   const [open, setOpen] = useState(null);
 
+  const [open1, setOpen1] = useState(false);
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -88,13 +102,75 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
+  const [pregnancyList, setPregnancyList] = useState([]);
+
+  //Add Pregnancy
+  const [newPregnancyName, setNewPregnancyName] = useState("");
+  const [newPregnancyAge, setNewPregnancyAge] = useState(0);
+  const [newPregnancyDob, setNewPregnancyDob] = useState(new Date());
+  const [newPregnancyContact, setNewPregnancyContact] = useState(0);
+
+  //Add Pregnancy
+  const [updatePregnancyName, setupdatePregnancyName] = useState(""); 
+  const [updatePregnancyAge, setupdatePregnancyAge] = useState(0);
+  const [updatePregnancyDob, setupdatePregnancyDob] = useState(new Date());
+  const [updatePregnancyContact, setupdatePregnancyContact] = useState(0);
+
+  const pregnancyCollectionRef = collection(db, "pregnancy")
+
+  useEffect(() => {
+    getPregnancyList(); 
+  }, [])
+
+  const getPregnancyList = async () => {
+    try {
+      const data = await getDocs(pregnancyCollectionRef);
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setPregnancyList(filteredData);
+      console.log(data)
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const handleDateChange = (date) => {
+    newPregnancyDob(date);
+  };
+  const handleDateChange1 = (date) => {
+    updatePregnancyDob(date);
   };
 
-  const handleCloseMenu = () => {
-    setOpen(null);
+  const onSubmitNewPregnancy = async () => {
+    try {
+      await addDoc(pregnancyCollectionRef, {
+        name: newPregnancyName, 
+        age: newPregnancyAge, 
+        contact: newPregnancyContact, 
+        dob: newPregnancyDob})
+
+        getPregnancyList(); 
+    } catch (err) {
+      console.error(err);
+    }
+
   };
+
+  const deletePregnancy = async (id) => {
+    const pregnancyDoc = doc(db, "pregnancy", id)
+    await deleteDoc(pregnancyDoc);
+    getPregnancyList();
+  };
+
+  const updateUser = async (id) => {
+    const pregnancyDoc = doc(db, "pregnancy", id)
+    const newData = {name: updatePregnancyName, age: updatePregnancyAge, contact: updatePregnancyContact, dob: updatePregnancyDob}
+    await updateDoc(pregnancyDoc, newData);
+    getPregnancyList();
+  };
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -104,7 +180,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = pregnancyList.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -140,25 +216,41 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const handleClickOpen1 = () => {
+    setOpen1(true);
+  };
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClose1 = () => {
+    setOpen1(false);
+  };
+
+
+
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pregnancyList.length) : 0;
+
+  const filteredUsers = applySortFilter(pregnancyList, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Pregnants | Pregnancy Monitoring System </title>
       </Helmet>
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            Pregnants
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClickOpen1}>
+            New Pregnancy
           </Button>
         </Stack>
 
@@ -172,49 +264,49 @@ export default function UserPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={pregnancyList.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, brgy, avatarUrl, isVerified } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
-
+                  {pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    
+                    const selectedUser = selected.indexOf(row.name) !== -1;
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+
+                        <TableRow hover tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell component="th" scope="row" padding="none" key={row.id}>
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
+                          <Avatar alt={row.name} src={avt} />
                             <Typography variant="subtitle2" noWrap>
-                              {name}
+                              {row.name}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{brgy}</TableCell>
+                        <TableCell key={row.id} align="left">{row.age}</TableCell>
 
-                        <TableCell align="left">{role}</TableCell>
+                        <TableCell key={row.id} align="left">{row.dob.toDate().toLocaleDateString()}</TableCell>
 
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                        <TableCell key={row.id} align="left">{row.contact}</TableCell>
 
                         <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
+                          <IconButton size="large" color="inherit" >
+                            <Iconify icon={'material-symbols:edit-outline'}/>
+                          </IconButton>
+                          <IconButton size="large" color="inherit" onClick={() => deletePregnancy(row.id)}>
+                            <Iconify icon={'material-symbols:delete-outline'} />
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    );
-                  })}
+                      )
+                    })}
+
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -252,7 +344,7 @@ export default function UserPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={pregnancyList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -261,34 +353,34 @@ export default function UserPage() {
         </Card>
       </Container>
 
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
+      <div>
+      <Dialog open={open1} onClose={handleClose1}>
+        <DialogTitle>Add Pregnancy</DialogTitle>
+        <DialogContent>
+          <form onSubmit={onSubmitNewPregnancy}>
+            <Stack spacing={2} margin={2} >
+              <TextField label="Full Name" fullWidth onChange={(e) => setNewPregnancyName(e.target.value)}/>
+              <TextField label="Age" fullWidth onChange={(e) => setNewPregnancyAge(e.target.value)}/>
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
+                <DatePicker selected={newPregnancyDob} onChange={handleDateChange} label="Date of Birth"/>
+              </LocalizationProvider>
+              <TextField label="Contact No." fullWidth onChange={(e) => setNewPregnancyContact(e.target.value)}/>
+            </Stack>
+
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose1} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={onSubmitNewPregnancy} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+
     </>
   );
 }
