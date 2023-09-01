@@ -43,7 +43,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import avt from '../assets/avatar_default.jpg'
-
+import Swal from 'sweetalert2';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -115,6 +115,8 @@ export default function UserPage() {
   const [updatePregnancyAge, setupdatePregnancyAge] = useState(0);
   const [updatePregnancyDob, setupdatePregnancyDob] = useState(new Date());
   const [updatePregnancyContact, setupdatePregnancyContact] = useState(0);
+  const [modalData, setModalData] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const pregnancyCollectionRef = collection(db, "pregnancy")
 
@@ -145,21 +147,31 @@ export default function UserPage() {
 
   const onSubmitNewPregnancy = async () => {
     try {
+
       await addDoc(pregnancyCollectionRef, {
         name: newPregnancyName, 
         age: newPregnancyAge, 
         contact: newPregnancyContact, 
         dob: newPregnancyDob})
-
+        Swal.fire(
+          'Added!',
+          'Information has been added.',
+          'success'
+        )
         getPregnancyList(); 
     } catch (err) {
       console.error(err);
     }
-
+    setOpen(false);
   };
 
   const deletePregnancy = async (id) => {
     const pregnancyDoc = doc(db, "pregnancy", id)
+    Swal.fire(
+      'Deleted!',
+      'Information has been deleted.',
+      'success'
+    )
     await deleteDoc(pregnancyDoc);
     getPregnancyList();
   };
@@ -222,7 +234,7 @@ export default function UserPage() {
 
 
   const handleClose = () => {
-    setOpen(false);
+    setModalOpen(false);
   };
 
   const handleClose1 = () => {
@@ -270,7 +282,7 @@ export default function UserPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  {pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     
                     const selectedUser = selected.indexOf(row.name) !== -1;
                     return (
@@ -291,12 +303,14 @@ export default function UserPage() {
 
                         <TableCell key={row.id} align="left">{row.age}</TableCell>
 
-                        <TableCell key={row.id} align="left">{row.dob.toDate().toLocaleDateString()}</TableCell>
+                        <TableCell key={row.id} align="left">{row.dob}</TableCell>
 
                         <TableCell key={row.id} align="left">{row.contact}</TableCell>
 
                         <TableCell align="left">
-                          <IconButton size="large" color="inherit" >
+                          <IconButton size="large" color="inherit" onClick={() => {
+                            setModalData(row); setModalOpen(true);
+                          }}>
                             <Iconify icon={'material-symbols:edit-outline'}/>
                           </IconButton>
                           <IconButton size="large" color="inherit" onClick={() => deletePregnancy(row.id)}>
@@ -375,6 +389,32 @@ export default function UserPage() {
             Cancel
           </Button>
           <Button onClick={onSubmitNewPregnancy} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+
+    <div>
+      <Dialog open={modalOpen} onClose={handleClose}>
+        <DialogTitle>Edit Pregnancy</DialogTitle>
+        <DialogContent>
+          <form onSubmit={updateUser}>
+            <Stack spacing={2} margin={2} >
+              <TextField label="Full Name" fullWidth onChange={(e) => setupdatePregnancyName(e.target.value)}/>
+              <TextField label="Age" fullWidth onChange={(e) => setupdatePregnancyAge(e.target.value)}/>
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
+                <DatePicker selected={updatePregnancyDob} onChange={handleDateChange1} label="Date of Birth"/>
+              </LocalizationProvider>
+              <TextField label="Contact No." fullWidth onChange={(e) => setupdatePregnancyContact(e.target.value)}/>
+            </Stack>
+          </form>
+        </DialogContent>
+        <DialogActions>
+        <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => {updateUser(modalData.id), setModalOpen(false)}} color="primary">
             Submit
           </Button>
         </DialogActions>

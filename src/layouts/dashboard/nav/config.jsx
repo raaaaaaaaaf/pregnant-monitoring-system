@@ -13,12 +13,12 @@ const navConfig = [
   },
   {
     title: 'Add Pregnant',
-    path: '/dashboard/user',
+    path: '/dashboard/add',
     icon: icon('ic_user'),
   },
   {
     title: 'Pregnant Records',
-    path: '/dashboard/products',
+    path: '/dashboard/user',
     icon: icon('ic_cart'),
   },
   {

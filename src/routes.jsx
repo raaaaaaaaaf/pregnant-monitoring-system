@@ -13,6 +13,7 @@ import DashboardAppPage from './pages/DashboardAppPage';
 import { AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 import { auth } from './firebase/firebaseConfig';
+import AddPregnancy from './pages/AddPregnancy';
 // ----------------------------------------------------------------------
 
 
@@ -30,6 +31,7 @@ export default function Router() {
         { path: 'user', element:  <UserPage />},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        { path: 'add', element: <AddPregnancy />,},
       ],
     },
     {
@@ -40,6 +42,7 @@ export default function Router() {
       path: 'register',
       element: <RegisterPage />,
     },
+
     {
       element: <SimpleLayout />,
       children: [
