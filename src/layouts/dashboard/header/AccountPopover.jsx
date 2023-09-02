@@ -5,7 +5,7 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover 
 // mocks_
 import { signOut } from 'firebase/auth';
 import { auth } from '../../../firebase/firebaseConfig';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import avtimg from '../../../assets/avatar_default.jpg'
 import { AuthContext } from '../../../context/AuthContext';
 
@@ -16,14 +16,7 @@ const MENU_OPTIONS = [
     label: 'Home',
     icon: 'eva:home-fill',
   },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
+
 ];
 
 // ----------------------------------------------------------------------
@@ -72,7 +65,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={currentUser.photoURL ? currentUser.photoURL : avtimg} alt="photoURL" />
+        <Avatar src={currentUser.photoURL ?? avtimg} alt="photoURL" />
       </IconButton>
 
       <Popover
@@ -97,10 +90,10 @@ export default function AccountPopover() {
       {currentUser ? (
           <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {currentUser.displayName}
+          {currentUser.displayName ?? "Loading..."}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {currentUser.email}
+            {currentUser.email ?? "Loading..."}
           </Typography>
         </Box>
       ) : (
@@ -110,15 +103,6 @@ export default function AccountPopover() {
           </Typography>
         </Box>
       )}
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Stack sx={{ p: 1 }}>
-          {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Stack>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 

@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+import {  Container, Typography, Divider, Stack, Button } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -14,7 +14,7 @@ import { auth, provider, storage, db } from '../firebase/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { doc, setDoc } from 'firebase/firestore';
-
+import { Link } from 'react-router-dom';
 // ----------------------------------------------------------------------
 
 
@@ -112,7 +112,7 @@ export default function LoginPage() {
 
             <Typography variant="body2" sx={{ mb: 5 }}>
               Already have an account? {''}
-              <Link variant="subtitle2">Sign In</Link>
+              <Link variant="subtitle2" to={'/login'}>Sign In</Link>
             </Typography>
 
             <Stack direction="row" spacing={2}>

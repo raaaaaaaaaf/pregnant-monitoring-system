@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 // @mui
 import {
   Card,
@@ -44,6 +44,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import avt from '../assets/avatar_default.jpg'
 import Swal from 'sweetalert2';
+import { EditFormContext } from '../context/EditContext';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -117,6 +119,10 @@ export default function UserPage() {
   const [updatePregnancyContact, setupdatePregnancyContact] = useState(0);
   const [modalData, setModalData] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const {setFormData, setFormId} = useContext(EditFormContext);
+
+  const nav = useNavigate();
+
 
   const pregnancyCollectionRef = collection(db, "pregnancy")
 
@@ -241,9 +247,6 @@ export default function UserPage() {
     setOpen1(false);
   };
 
-
-
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pregnancyList.length) : 0;
 
   const filteredUsers = applySortFilter(pregnancyList, getComparator(order, orderBy), filterName);
@@ -259,11 +262,8 @@ export default function UserPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Pregnants
+            Pregnancy Records
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleClickOpen1}>
-            New Pregnancy
-          </Button>
         </Stack>
 
         <Card>
@@ -282,7 +282,48 @@ export default function UserPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  {Object.keys(pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)).map((id, index) => {
+                    const selectedUser = selected.indexOf(pregnancyList[id].name) !== -1;
+                    return (
+
+                      <TableRow hover tabIndex={-1} role="checkbox" selected={selectedUser} key={id}>
+                        <TableCell padding="checkbox">
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                        </TableCell>
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                          <Avatar alt={pregnancyList[id].name} src={avt} />
+                            <Typography variant="subtitle2" noWrap>
+                              {pregnancyList[id].name}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell align="left">{pregnancyList[id].age}</TableCell>
+
+                        <TableCell align="left">{pregnancyList[id].dob}</TableCell>
+
+                        <TableCell align="left">{pregnancyList[id].contact}</TableCell>
+
+                        <TableCell align="left">
+                          <Link to={`edit/${pregnancyList[id].id}`}>
+                          <IconButton size="large" color="inherit" onClick={() =>setFormId(pregnancyList[id].id)}>
+                            <Iconify icon={'material-symbols:edit-outline'}/>
+                          </IconButton>
+                          </Link>
+                          <IconButton size="large" color="inherit" onClick={() => deletePregnancy(pregnancyList[id].id)}>
+                            <Iconify icon={'material-symbols:delete-outline'} />
+                          </IconButton>
+                          <Link to={`view/${pregnancyList[id].id}`}>
+                          <IconButton size="large" color="inherit">
+                            <Iconify icon={'teenyicons:pdf-outline'}/>
+                          </IconButton>
+                          </Link>
+                        </TableCell>
+                      </TableRow>
+                      )
+                  })}
+                  {/* {pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).keys(data).map((id, index) => {
                     
                     const selectedUser = selected.indexOf(row.name) !== -1;
                     return (
@@ -292,34 +333,32 @@ export default function UserPage() {
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none" key={row.id}>
+                        <TableCell component="th" scope="row" padding="none" key={id}>
                           <Stack direction="row" alignItems="center" spacing={2}>
-                          <Avatar alt={row.name} src={avt} />
+                          <Avatar alt={data[id].name} src={avt} />
                             <Typography variant="subtitle2" noWrap>
                               {row.name}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell key={row.id} align="left">{row.age}</TableCell>
+                        <TableCell align="left">{data[id].age}</TableCell>
 
-                        <TableCell key={row.id} align="left">{row.dob}</TableCell>
+                        <TableCell align="left">{data[id].dob}</TableCell>
 
-                        <TableCell key={row.id} align="left">{row.contact}</TableCell>
+                        <TableCell align="left">{data[id].contact}</TableCell>
 
                         <TableCell align="left">
-                          <IconButton size="large" color="inherit" onClick={() => {
-                            setModalData(row); setModalOpen(true);
-                          }}>
+                          <IconButton size="large" color="inherit" onClick={() => handleLink} >
                             <Iconify icon={'material-symbols:edit-outline'}/>
                           </IconButton>
-                          <IconButton size="large" color="inherit" onClick={() => deletePregnancy(row.id)}>
+                          <IconButton size="large" color="inherit" onClick={() => deletePregnancy()}>
                             <Iconify icon={'material-symbols:delete-outline'} />
                           </IconButton>
                         </TableCell>
                       </TableRow>
                       )
-                    })}
+                    })} */}
 
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>

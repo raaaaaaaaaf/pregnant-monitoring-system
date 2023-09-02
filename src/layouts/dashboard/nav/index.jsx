@@ -62,11 +62,11 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-          <Avatar src={currentUser.photoURL ? currentUser.photoURL : avtimg} alt="photoURL" />
+          <Avatar src={currentUser.photoURL ?? avtimg} alt="photoURL" />
           {currentUser ? (
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-              {currentUser.displayName}
+              {currentUser.displayName ?? "Loading..."}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }} >

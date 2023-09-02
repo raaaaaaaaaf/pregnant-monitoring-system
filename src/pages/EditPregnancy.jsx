@@ -8,15 +8,15 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Step1Form from '../layouts/dashboard/addForm/Step1Form';
-import Step2Form from '../layouts/dashboard/addForm/Step2Form';
-import Step3Form from '../layouts/dashboard/addForm/Step3Form';
-import { useContext } from 'react';
-import { AddFormContext } from '../context/AddContext';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import Step1Form from '../layouts/dashboard/editForm/Step1Form';
+import Step2Form from '../layouts/dashboard/editForm/Step2Form';
+import Step3Form from '../layouts/dashboard/editForm/Step3Form';
+import { useContext, useEffect } from 'react';
+import { addDoc, collection, serverTimestamp, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import Swal from 'sweetalert2';
-import { nanoid } from 'nanoid'
+import { EditFormContext } from '../context/EditContext';
+import { useParams } from 'react-router-dom';
 
 const steps = ['Pregnant Information', 'Assesment', 'Remarks'];
 
@@ -33,15 +33,18 @@ function getStepContent(step) {
   }
 }
 
-export default function AddPregnancy () {
+export default function EditPregnancy () {
 const [activeStep, setActiveStep] = React.useState(0);
-const {formData, setFormData} = useContext(AddFormContext);
+const {formData, setFormData, formId} = useContext(EditFormContext);
 
-const pregnancyCollectionRef = collection(db, "pregnancy")
 
-const addPregnancy = async () => {
+
+
+
+const editPregnancy = async (id) => {
     try {
-        await addDoc(pregnancyCollectionRef, {
+        const pregnancyDoc = doc(db, "pregnancy", id)
+        const newData = {
             address: formData.address,
             age: formData.age,
             aog: formData.aog,
@@ -69,10 +72,11 @@ const addPregnancy = async () => {
             temp: formData.temp,
             timeStamp: serverTimestamp(),
             weight: formData.weight,
-        })
+        }
+        await updateDoc(pregnancyDoc, newData);
         Swal.fire(
-            'Added!',
-            'Information has been added.',
+            'Edited!',
+            'Information has been edited.',
             'success'
           )
 
@@ -95,7 +99,7 @@ return (
     <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
       <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
         <Typography component="h1" variant="h4" align="center">
-          INDIVIDUAL TREATMENT RECORD
+         EDIT INDIVIDUAL TREATMENT RECORD
         </Typography>
         <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
           {steps.map((label) => (
@@ -126,7 +130,7 @@ return (
               )}
             {activeStep === steps.length - 1 ?          
             <Button
-                onClick={addPregnancy}
+                onClick={() => editPregnancy(formId)}
                 variant="contained"
                 sx={{ mt: 3, ml: 1 }}
               > Add Pregnancy

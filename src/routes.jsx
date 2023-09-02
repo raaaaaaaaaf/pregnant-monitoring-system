@@ -14,25 +14,27 @@ import { AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 import { auth } from './firebase/firebaseConfig';
 import AddPregnancy from './pages/AddPregnancy';
+import EditPregnancy from './pages/EditPregnancy';
+import ViewPage from './pages/ViewPage';
 // ----------------------------------------------------------------------
 
 
 
 export default function Router() {
+  const {currentUser} = useContext(AuthContext);
+
+  const ProtectedRoute = ({ children }) => {
+    if (!currentUser) {
+      return <Navigate to="/login" replace/>
+    }
+    return children
+  }
 
 
   const routes = useRoutes([
     {
-      path: '/dashboard',
-      element:  <DashboardLayout />,
-      children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
-        { path: 'app', element: <DashboardAppPage /> },
-        { path: 'user', element:  <UserPage />},
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
-        { path: 'add', element: <AddPregnancy />,},
-      ],
+      path: '/',
+      element: <Navigate to="/login" />,
     },
     {
       path: 'login',
@@ -42,7 +44,20 @@ export default function Router() {
       path: 'register',
       element: <RegisterPage />,
     },
-
+    {
+      path: 'dashboard',
+      element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
+      children: [
+        { element: <ProtectedRoute><Navigate to="/dashboard/app" /></ProtectedRoute>, index: true },
+        { path: 'app', element: <ProtectedRoute><DashboardAppPage /></ProtectedRoute> },
+        { path: 'user', element:  <ProtectedRoute><UserPage /></ProtectedRoute>},
+        { path: 'products', element: <ProtectedRoute><ProductsPage /></ProtectedRoute> },
+        { path: 'blog', element: <ProtectedRoute><BlogPage /></ProtectedRoute> },
+        { path: 'add', element: <ProtectedRoute><AddPregnancy /></ProtectedRoute>,},
+        { path: 'user/edit/:id', element: <ProtectedRoute><EditPregnancy /></ProtectedRoute>,},
+        { path: 'user/view/:id', element: <ProtectedRoute><ViewPage /></ProtectedRoute>,},
+      ],
+    },
     {
       element: <SimpleLayout />,
       children: [

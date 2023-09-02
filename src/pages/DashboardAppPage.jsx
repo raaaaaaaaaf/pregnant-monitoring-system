@@ -17,11 +17,41 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
+import { useEffect, useState } from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
+  const [amount, setAmount] = useState(null);
+  const [diff, setDiff] = useState(null)
+
+  const data = [
+    {amount},
+    {diff},
+  ]
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const today = new Date();
+      const lastMonth = new Date(new Date().setMonth(today.getMonth() -1))
+      const prevMonth = new Date(new Date().setMonth(today.getMonth() -2))
+
+      const q = query(collection(db, "pregnancy"), where("timeStamp", "<=", today))
+      const lastMonthQuery = query(collection(db, "pregnancy"), where("timeStamp", "<=", today), where("timeStamp", ">", lastMonth))
+      const prevMonthQuery = query(collection(db, "pregnancy"), where("timeStamp", "<=", lastMonth), where("timeStamp", ">", prevMonth))
+      const lastMonthData = await getDocs(lastMonthQuery)
+      const prevMonthData = await getDocs(prevMonthQuery)
+      const pregnancyAmount = await getDocs(q);
+
+      setAmount (pregnancyAmount.docs.length)
+      setDiff ((lastMonthData.docs.length - prevMonthData.docs.length) / (prevMonthData.docs.length) * 100)
+    }
+    fetchData()
+  }, [])
 
   return (
     <>
@@ -36,27 +66,18 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={6}>
-            <AppWidgetSummary title="PREGNANTS" total={71} color="error" icon={'ant-design:meh-filled'} />
+            <AppWidgetSummary title="PREGNANTS" total={amount} color="error" icon={'ant-design:meh-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={6}>
-            <AppWidgetSummary title="ALL RECORDS" total={234} color="error" icon={'ant-design:save-filled'} />
+            <AppWidgetSummary title="ALL RECORDS" total={amount} color="error" icon={'ant-design:save-filled'} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={12}>
             <AppWebsiteVisits
               title="Pregnants"
-              subheader="(+20%) than last month"
+              subheader= {`${diff}% more than last month`}
               chartLabels={[
-                '10/01/2022',
-                '11/01/2022',
-                '12/01/2022',
-                '01/01/2023',
-                '02/01/2023',
-                '03/01/2023',
-                '04/01/2023',
-                '05/01/2023',
-                '06/01/2023',
                 '07/01/2023',
                 '08/01/2023',
               ]}
@@ -65,7 +86,7 @@ export default function DashboardAppPage() {
                   name: 'Pregnancy',
                   type: 'column',
                   fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                  data: [2,3],
                 },
 
               ]}

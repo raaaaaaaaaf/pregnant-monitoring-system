@@ -1,5 +1,6 @@
 // component
 import SvgColor from '../../../components/svg-color';
+import Iconify from '../../../components/iconify/Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -9,22 +10,22 @@ const navConfig = [
   {
     title: 'dashboard',
     path: '/dashboard/app',
-    icon: icon('ic_analytics'),
+    icon: <Iconify icon={'material-symbols:home-outline'}/>,
   },
   {
     title: 'Add Pregnant',
     path: '/dashboard/add',
-    icon: icon('ic_user'),
+    icon: <Iconify icon={'healthicons:pregnant'}/>,
   },
   {
     title: 'Pregnant Records',
     path: '/dashboard/user',
-    icon: icon('ic_cart'),
+    icon: <Iconify icon={'vaadin:records'}/>,
   },
   {
     title: 'Goals',
     path: '/dashboard/blog',
-    icon: icon('ic_blog'),
+    icon: <Iconify icon={'octicon:goal-16'}/>,
   },
 
 ];

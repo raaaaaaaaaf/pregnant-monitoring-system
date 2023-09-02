@@ -1,10 +1,9 @@
-import { nanoid } from "nanoid";
 import { createContext, useState } from "react";
 
 
-export const AddFormContext = createContext();
+export const EditFormContext = createContext();
 
-export function AddFormProvider ({children}) {
+export function EditFormProvider ({children}) {
     const [formData, setFormData] = useState({
     // Step1
         fullName: "",
@@ -29,7 +28,6 @@ export function AddFormProvider ({children}) {
         weight: "",
         height: "",
         bmi: "",
-
     // Step 3
         remarks1: "",
         remarks2: "",
@@ -37,10 +35,13 @@ export function AddFormProvider ({children}) {
         remarks4: "",
         nurse:"",
 
-    })
+    });
+
+    const [formId, setFormId] = useState("");
+    
     return (
-        <AddFormContext.Provider value={{formData,setFormData}}>
+        <EditFormContext.Provider value={{formData, setFormData, formId, setFormId}}>
             {children}
-        </AddFormContext.Provider>
+        </EditFormContext.Provider>
     )
 }

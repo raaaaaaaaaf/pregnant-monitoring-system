@@ -5,12 +5,34 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useContext } from 'react';
-import { AddFormContext } from '../../../context/AddContext';
+import { EditFormContext } from '../../../context/EditContext';
+import { useEffect } from 'react';
+import { addDoc, collection, serverTimestamp, doc, updateDoc, getDocs } from 'firebase/firestore';
+import { db } from '../../../firebase/firebaseConfig';
+import { useParams } from 'react-router-dom';
 
-export default function Step2Form() {
-    const {formData, setFormData} = useContext(AddFormContext);
+export default function Step1Form() {
+    const {formData, setFormData} = useContext(EditFormContext);
+    const pregnancyCollectionRef = collection(db, "pregnancy")
+    const {id} = useParams();
 
-    // Define the handleInputChange function to update formData
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const doc = await getDocs(pregnancyCollectionRef);
+          if (doc.exists) {
+            const data = doc.data();
+            setFormData(data)
+          }
+
+        } catch(err){
+            console.error(err);
+        }
+      }
+      fetchData();
+    }, [id])
+
+      // Define the handleInputChange function to update formData
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -18,20 +40,58 @@ export default function Step2Form() {
         [name]: value,
         }));
     };
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        VITAL SIGN/ASSESSMENT
+        Pregnant Information
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="temp"
-            name="temp"
-            value={formData.temp}
+            id="fullName"
+            name="fullName"
+            value={formData.fullName || ""}
             onChange={handleInputChange}
-            label="Temperature"
+            label="Full name"
+            fullWidth
+            autoComplete="given-name"
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="lmp"
+            name="lmp"
+            value={formData.lmp || ""}
+            onChange={handleInputChange}
+            label="LMP"
+            fullWidth
+            autoComplete="family-name"
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="age"
+            name="age"
+            value={formData.age || ""}
+            onChange={handleInputChange}
+            label="Age"
+            fullWidth
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            id="edc"
+            name="edc"
+            value={formData.edc || ""}
+            onChange={handleInputChange}
+            label="EDC"
             fullWidth
             variant="standard"
           />
@@ -39,11 +99,34 @@ export default function Step2Form() {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="aog"
-            name="aog"
-            value={formData.aog}
+            id="dob"
+            name="dob"
+            value={formData.dob || ""}
             onChange={handleInputChange}
-            label="Assesment of Gestitional Age"
+            label="Date of Birth"
+            fullWidth
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            id="philhealth"
+            name="philhealth"
+            value={formData.philhealth || ""}
+            onChange={handleInputChange}
+            label="PHILHEALTH"
+            fullWidth
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            required
+            id="address"
+            name="address"
+            value={formData.address || ""}
+            onChange={handleInputChange}
+            label="Address"
             fullWidth
             variant="standard"
           />
@@ -52,118 +135,22 @@ export default function Step2Form() {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="pr"
-            name="pr"
-            value={formData.pr}
+            id="husband"
+            name="husband"
+            value={formData.husband || ""}
             onChange={handleInputChange}
-            label="Pulse Rate"
+            label="Husband/Relatives"
             fullWidth
             variant="standard"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="fh"
-            name="fh"
-            value={formData.fh}
+            id="cp"
+            name="cp"
+            value={formData.cp || ""}
             onChange={handleInputChange}
-            label="Fundal Height"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="bp"
-            name="bp"
-            value={formData.bp}
-            onChange={handleInputChange}
-            label="Blood Pressure"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="fht"
-            name="fht"
-            value={formData.fht}
-            onChange={handleInputChange}
-            label="Fetal Heart Tone"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="rr"
-            name="rr"
-            value={formData.rr}
-            onChange={handleInputChange}
-            label="Respiration Rate"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="pres"
-            name="pres"
-            value={formData.pres}
-            onChange={handleInputChange}
-            label="P.R.E.S"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="weight"
-            name="weight"
-            value={formData.weight}
-            onChange={handleInputChange}
-            label="Weight"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="pros"
-            name="pros"
-            value={formData.pros}
-            onChange={handleInputChange}
-            label="P.R.O.S"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="height"
-            name="height"
-            value={formData.height}
-            onChange={handleInputChange}
-            label="Height"
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="bmi"
-            name="bmi"
-            value={formData.bmi}
-            onChange={handleInputChange}
-            label="Body Mass Index"
+            label="Contact No."
             fullWidth
             variant="standard"
           />

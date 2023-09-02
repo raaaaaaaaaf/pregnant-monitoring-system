@@ -5,10 +5,10 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useContext } from 'react';
-import { AddFormContext } from '../../../context/AddContext';
+import { EditFormContext } from '../../../context/EditContext';
 
 export default function Step2Form() {
-    const {formData, setFormData} = useContext(AddFormContext);
+  const {formData, setFormData} = useContext(EditFormContext);
 
     // Define the handleInputChange function to update formData
     const handleInputChange = (e) => {
