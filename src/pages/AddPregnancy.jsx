@@ -18,7 +18,7 @@ import { db } from '../firebase/firebaseConfig';
 import Swal from 'sweetalert2';
 import { nanoid } from 'nanoid'
 
-const steps = ['Pregnant Information', 'Assesment', 'Remarks'];
+const steps = ['Pregnant Information', 'Assesment', 'Final'];
 
 function getStepContent(step) {
   switch (step) {

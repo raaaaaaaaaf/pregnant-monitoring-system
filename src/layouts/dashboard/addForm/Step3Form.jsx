@@ -21,7 +21,7 @@ export default function Step3Form() {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Remarks
+        Final
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -31,7 +31,7 @@ export default function Step3Form() {
             name="remarks1"
             value={formData.remarks1}
             onChange={handleInputChange}
-            label="Remarks"
+            label="Td"
             fullWidth
             variant="standard"
           />
@@ -42,7 +42,7 @@ export default function Step3Form() {
             name="remarks2"
             value={formData.remarks2}
             onChange={handleInputChange}
-            label="Remarks"
+            label="Laboratory"
             fullWidth
             variant="standard"
           />
@@ -54,7 +54,7 @@ export default function Step3Form() {
             name="remarks3"
             value={formData.remarks3}
             onChange={handleInputChange}
-            label="Remarks"
+            label="Chief Complaints"
             fullWidth
             variant="standard"
           />
@@ -65,7 +65,7 @@ export default function Step3Form() {
             name="remarks4"
             value={formData.remarks4}
             onChange={handleInputChange}
-            label="Remarks"
+            label="TCB on"
             fullWidth
             variant="standard"
           />

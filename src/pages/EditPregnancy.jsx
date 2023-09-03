@@ -16,9 +16,9 @@ import { addDoc, collection, serverTimestamp, doc, updateDoc, getDocs } from 'fi
 import { db } from '../firebase/firebaseConfig';
 import Swal from 'sweetalert2';
 import { EditFormContext } from '../context/EditContext';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const steps = ['Pregnant Information', 'Assesment', 'Remarks'];
+const steps = ['Pregnant Information', 'Assesment', 'Final'];
 
 function getStepContent(step) {
   switch (step) {
@@ -37,7 +37,7 @@ export default function EditPregnancy () {
 const [activeStep, setActiveStep] = React.useState(0);
 const {formData, setFormData, formId} = useContext(EditFormContext);
 
-
+const navigate = useNavigate();
 
 
 
@@ -79,6 +79,7 @@ const editPregnancy = async (id) => {
             'Information has been edited.',
             'success'
           )
+          navigate('/dashboard/user')
 
     } catch(err) {
         console.error(err);
@@ -133,7 +134,7 @@ return (
                 onClick={() => editPregnancy(formId)}
                 variant="contained"
                 sx={{ mt: 3, ml: 1 }}
-              > Add Pregnancy
+              > Save
             </Button> 
             :
             <Button

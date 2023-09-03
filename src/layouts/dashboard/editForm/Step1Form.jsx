@@ -13,24 +13,6 @@ import { useParams } from 'react-router-dom';
 
 export default function Step1Form() {
     const {formData, setFormData} = useContext(EditFormContext);
-    const pregnancyCollectionRef = collection(db, "pregnancy")
-    const {id} = useParams();
-
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const doc = await getDocs(pregnancyCollectionRef);
-          if (doc.exists) {
-            const data = doc.data();
-            setFormData(data)
-          }
-
-        } catch(err){
-            console.error(err);
-        }
-      }
-      fetchData();
-    }, [id])
 
       // Define the handleInputChange function to update formData
     const handleInputChange = (e) => {
@@ -52,11 +34,10 @@ export default function Step1Form() {
             required
             id="fullName"
             name="fullName"
-            value={formData.fullName || ""}
+            value={formData.fullName}
             onChange={handleInputChange}
             label="Full name"
             fullWidth
-            autoComplete="given-name"
             variant="standard"
           />
         </Grid>
@@ -65,11 +46,10 @@ export default function Step1Form() {
             required
             id="lmp"
             name="lmp"
-            value={formData.lmp || ""}
+            value={formData.lmp}
             onChange={handleInputChange}
             label="LMP"
             fullWidth
-            autoComplete="family-name"
             variant="standard"
           />
         </Grid>
@@ -78,7 +58,7 @@ export default function Step1Form() {
             required
             id="age"
             name="age"
-            value={formData.age || ""}
+            value={formData.age}
             onChange={handleInputChange}
             label="Age"
             fullWidth
@@ -89,7 +69,7 @@ export default function Step1Form() {
           <TextField
             id="edc"
             name="edc"
-            value={formData.edc || ""}
+            value={formData.edc}
             onChange={handleInputChange}
             label="EDC"
             fullWidth
@@ -101,7 +81,7 @@ export default function Step1Form() {
             required
             id="dob"
             name="dob"
-            value={formData.dob || ""}
+            value={formData.dob}
             onChange={handleInputChange}
             label="Date of Birth"
             fullWidth
@@ -112,7 +92,7 @@ export default function Step1Form() {
           <TextField
             id="philhealth"
             name="philhealth"
-            value={formData.philhealth || ""}
+            value={formData.philhealth}
             onChange={handleInputChange}
             label="PHILHEALTH"
             fullWidth
@@ -124,7 +104,7 @@ export default function Step1Form() {
             required
             id="address"
             name="address"
-            value={formData.address || ""}
+            value={formData.address}
             onChange={handleInputChange}
             label="Address"
             fullWidth
@@ -137,7 +117,7 @@ export default function Step1Form() {
             required
             id="husband"
             name="husband"
-            value={formData.husband || ""}
+            value={formData.husband}
             onChange={handleInputChange}
             label="Husband/Relatives"
             fullWidth
@@ -148,7 +128,7 @@ export default function Step1Form() {
           <TextField
             id="cp"
             name="cp"
-            value={formData.cp || ""}
+            value={formData.cp}
             onChange={handleInputChange}
             label="Contact No."
             fullWidth

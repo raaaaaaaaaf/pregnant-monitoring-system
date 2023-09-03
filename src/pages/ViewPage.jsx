@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '../firebase/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
-import { Page, Text, View, Document, StyleSheet, pdf, Image, Font } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, pdf, Image, Font, Line } from '@react-pdf/renderer';
 import logo from '../assets/logo1.png'
 
 Font.register({
@@ -16,16 +16,33 @@ const styles = StyleSheet.create({
         fontFamily: 'Oswald',
         padding: 40,
       },
+      top : {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      leftlogo: {
+        width: "20%",
+        marginLeft: 'auto',
+      },
+      rightlogo: {
+        width: "20%",
+        marginRight: 'auto',
+      },
+      image: {
+        width: '100%',
+        height: 'auto',
+      },
       title: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
         textAlign: "center",
-        marginBottom: 10,
+        width: '40%',
       },
       author: {
-        fontSize: 18,
+        fontSize: 14,
         textAlign: "center",
-        marginBottom: 20,
+        width: '20%',
       },
       columnsContainer: {
         display: 'flex',
@@ -35,9 +52,19 @@ const styles = StyleSheet.create({
       column: {
         width: '55%', // Adjust the width as needed
       },
+      columnrow: {
+        flexDirection: 'row',
+      },
+      column3: {
+        width: '33.33%', // Divide the page into three columns
+        padding: 5,    
+      },
       subtext: {
         fontSize: 18,
         marginBottom: 10,
+      },
+      sub1text: {
+        fontSize: 12,
       },
       nametext: {
         fontSize: 12,
@@ -51,7 +78,22 @@ const styles = StyleSheet.create({
         marginBottom: 10,
       },
       text: {
-        fontSize: 12,
+        fontSize: 10,
+        marginBottom: 5,
+      },
+      text2: {
+        fontSize: 10,
+      },
+      line: {
+        width: '100%',
+        height: 1,
+        backgroundColor: 'black',
+        marginTop: 10,
+      },
+      line2: {
+        width: '100%',
+        height: 1,
+        backgroundColor: 'black',
         marginBottom: 10,
       },
       footer: {
@@ -65,6 +107,7 @@ const styles = StyleSheet.create({
 const ViewPage = () => {
   const [pregnancy, setPregnancy] = useState({});
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const pregnancyDocRef = doc(db, 'pregnancy', id);
@@ -93,8 +136,18 @@ const ViewPage = () => {
       const PDF = (
         <Document>
             <Page size="A4" style={styles.page}>
+              <View style={styles.top}>
+                {/* <View style={styles.leftlogo}>
+                  <Image style={styles.image} src={logo}></Image>
+                </View> */}
                 <Text style={styles.title}>INDIVIDUAL TREATMENT RECORD</Text>
                 <Text style={styles.author}>Prenatal Care</Text>
+                {/* <View style={styles.rightlogo}>
+                  <Image style={styles.image} src={logo}></Image>
+                </View> */}
+              
+              </View>
+
                 <View style={styles.columnsContainer}>
                 {/* Left Column */}
                 <View style={styles.column}>
@@ -114,7 +167,9 @@ const ViewPage = () => {
                     <Text style={styles.text}>Contact No.: {pregnancy.contact}</Text>
                 </View>
                 </View>
-                <Text style={styles.subtext}>DATE: {new Date(pregnancy.timeStamp.seconds * 1000).toLocaleDateString("en-US")} </Text>
+                <View style={styles.line}></View>
+                <Text style={styles.sub1text}>DATE: {new Date(pregnancy.timeStamp.seconds * 1000).toLocaleDateString("en-US")} </Text>
+                <View style={styles.line2}></View>
                 <View style={styles.columnsContainer}>
                 {/* Left Column */}
                 <View style={styles.column}>
@@ -130,7 +185,6 @@ const ViewPage = () => {
                 {/* Right Column */}
                 <View style={styles.column}>
                     <Text style={styles.subtext}> </Text>
-                    <Text style={styles.subtext}> </Text>
                     <Text style={styles.text}>Assessment of Gestitional Age: {pregnancy.aog}wks</Text>
                     <Text style={styles.text}>Fundal Height: {pregnancy.fh}cm</Text>
                     <Text style={styles.text}>Fetal Heart Tone: {pregnancy.fht}bpm</Text>
@@ -138,20 +192,41 @@ const ViewPage = () => {
                     <Text style={styles.text}>Polycysthic Ovary Syndrome: {pregnancy.pros}</Text>
                 </View>
                 </View>
+                <View style={styles.line}></View>
+                <View style={styles.columnrow}>
+                  <View style={styles.column3}>
+                    <Text style={styles.sub1text}>Td: {pregnancy.remarks1}</Text>
+                  </View>
+                  <View style={styles.column3}>
+                    <Text style={styles.sub1text}>Laboratory: {pregnancy.remarks2}</Text>
+                  </View>
+                  <View style={styles.column3}>
+                    <Text style={styles.sub1text}>Chief Complaints: {pregnancy.remarks3}</Text>
+                  </View>
+                </View>
+                <View style={styles.line2}></View>
+                
+
                 <View style={styles.columnsContainer}>
                 {/* Left Column */}
                 <View style={styles.column}>
                     <Text style={styles.subtext}>REMARKS</Text>
-                    <Text style={styles.text}>1 {pregnancy.remarks1}</Text>
-                    <Text style={styles.text}>2 {pregnancy.remarks2}</Text>
-                    <Text style={styles.text}>3 {pregnancy.remarks3}</Text>
-                    <Text style={styles.text}>4 {pregnancy.remarks4}</Text>
+                    <Text style={styles.text2}>1. Instructed mother to continue taking FeSO4 + Folic Acid 1 tab OD as prescribed.</Text>
+                    <Text style={styles.text2}>2. Encouraged mother to eat plenty of green leafy vegetables and fruits.</Text>
+                    <Text style={styles.text2}>3. Instructed to avoid/reduce intake of salty and fatty foods.</Text>
+                    <Text style={styles.text2}>4. Increase fluid intake. have a glass of milk daily.</Text>
+                    <Text style={styles.text2}>5. Avoid caffeinated beverages such as coffee and soda.</Text>
+                    <Text style={styles.text2}>6. Avoid extraneous activity.</Text>
+                    <Text style={styles.subtext}> </Text>
+                    <Text style={styles.sub1text}>TCB on: {pregnancy.remarks4}</Text>
                 </View>
                 {/* Right Column */}
                 <View style={styles.column}>
-                    <Text style={styles.subtext}> </Text>
-                    <Text style={styles.subtext}> </Text>
-                    <Text style={styles.subtext}> </Text>
+                <Text style={styles.subtext}> </Text>
+                    <Text style={styles.text2}>7. Encouraged to have exercise daily as tolerated (walking for example) and to have enough rest and sleep. </Text>
+                    <Text style={styles.text2}>8. Provide mother health teachings on the importance of personal hygine, family planning and safe delivery.</Text>
+                    <Text style={styles.text2}>9. Educated mother on the different danger signs of pregnancy and instruct to report it immediately when experienced.</Text>
+                    <Text style={styles.text2}>10. Explain to the mother the importance of breastfeeding and proper nutrition for both mother and child.</Text>
                     <Text style={styles.nametext}>{pregnancy.nurse}</Text>
                     <Text style={styles.nursetext}>    Nurse/Midwife</Text>
 
@@ -171,6 +246,7 @@ const ViewPage = () => {
     // Only generate PDF when pregnancy data is available
     if (pregnancy.id) {
       generatePDF();
+      navigate('/dashboard/user')
     }
   }, [pregnancy]);
 

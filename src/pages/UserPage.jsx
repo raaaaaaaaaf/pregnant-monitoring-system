@@ -306,7 +306,7 @@ export default function UserPage() {
                         <TableCell align="left">{pregnancyList[id].contact}</TableCell>
 
                         <TableCell align="left">
-                          <Link to={`edit/${pregnancyList[id].id}`}>
+                          <Link to={`edit/${pregnancyList[id].id}`} style={{ textDecoration: 'none', color: 'black'}}>
                           <IconButton size="large" color="inherit" onClick={() =>setFormId(pregnancyList[id].id)}>
                             <Iconify icon={'material-symbols:edit-outline'}/>
                           </IconButton>
@@ -314,7 +314,7 @@ export default function UserPage() {
                           <IconButton size="large" color="inherit" onClick={() => deletePregnancy(pregnancyList[id].id)}>
                             <Iconify icon={'material-symbols:delete-outline'} />
                           </IconButton>
-                          <Link to={`view/${pregnancyList[id].id}`}>
+                          <Link to={`view/${pregnancyList[id].id}`} style={{ textDecoration: 'none', color: 'black'}}>
                           <IconButton size="large" color="inherit">
                             <Iconify icon={'teenyicons:pdf-outline'}/>
                           </IconButton>
