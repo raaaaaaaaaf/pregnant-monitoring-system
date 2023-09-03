@@ -34,17 +34,12 @@ import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-// mock
-import USERLIST from '../_mock/user';
+
 import { db } from '../firebase/firebaseConfig';
 import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import avt from '../assets/avatar_default.jpg'
 import Swal from 'sweetalert2';
-import { EditFormContext } from '../context/EditContext';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 // ----------------------------------------------------------------------
 
@@ -88,9 +83,6 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
-  const [open, setOpen] = useState(null);
-
-  const [open1, setOpen1] = useState(false);
 
   const [page, setPage] = useState(0);
 
@@ -105,21 +97,6 @@ export default function UserPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [pregnancyList, setPregnancyList] = useState([]);
-
-  //Add Pregnancy
-  const [newPregnancyName, setNewPregnancyName] = useState("");
-  const [newPregnancyAge, setNewPregnancyAge] = useState(0);
-  const [newPregnancyDob, setNewPregnancyDob] = useState(new Date());
-  const [newPregnancyContact, setNewPregnancyContact] = useState(0);
-
-  //Add Pregnancy
-  const [updatePregnancyName, setupdatePregnancyName] = useState(""); 
-  const [updatePregnancyAge, setupdatePregnancyAge] = useState(0);
-  const [updatePregnancyDob, setupdatePregnancyDob] = useState(new Date());
-  const [updatePregnancyContact, setupdatePregnancyContact] = useState(0);
-  const [modalData, setModalData] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const {setFormData, setFormId} = useContext(EditFormContext);
 
   const nav = useNavigate();
 
@@ -144,32 +121,6 @@ export default function UserPage() {
     }
   }
 
-  const handleDateChange = (date) => {
-    newPregnancyDob(date);
-  };
-  const handleDateChange1 = (date) => {
-    updatePregnancyDob(date);
-  };
-
-  const onSubmitNewPregnancy = async () => {
-    try {
-
-      await addDoc(pregnancyCollectionRef, {
-        name: newPregnancyName, 
-        age: newPregnancyAge, 
-        contact: newPregnancyContact, 
-        dob: newPregnancyDob})
-        Swal.fire(
-          'Added!',
-          'Information has been added.',
-          'success'
-        )
-        getPregnancyList(); 
-    } catch (err) {
-      console.error(err);
-    }
-    setOpen(false);
-  };
 
   const deletePregnancy = async (id) => {
     const pregnancyDoc = doc(db, "pregnancy", id)
@@ -179,13 +130,6 @@ export default function UserPage() {
       'success'
     )
     await deleteDoc(pregnancyDoc);
-    getPregnancyList();
-  };
-
-  const updateUser = async (id) => {
-    const pregnancyDoc = doc(db, "pregnancy", id)
-    const newData = {name: updatePregnancyName, age: updatePregnancyAge, contact: updatePregnancyContact, dob: updatePregnancyDob}
-    await updateDoc(pregnancyDoc, newData);
     getPregnancyList();
   };
 
@@ -234,18 +178,7 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
-  const handleClickOpen1 = () => {
-    setOpen1(true);
-  };
 
-
-  const handleClose = () => {
-    setModalOpen(false);
-  };
-
-  const handleClose1 = () => {
-    setOpen1(false);
-  };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pregnancyList.length) : 0;
 
@@ -323,42 +256,6 @@ export default function UserPage() {
                       </TableRow>
                       )
                   })}
-                  {/* {pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).keys(data).map((id, index) => {
-                    
-                    const selectedUser = selected.indexOf(row.name) !== -1;
-                    return (
-
-                        <TableRow hover tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="none" key={id}>
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          <Avatar alt={data[id].name} src={avt} />
-                            <Typography variant="subtitle2" noWrap>
-                              {row.name}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell align="left">{data[id].age}</TableCell>
-
-                        <TableCell align="left">{data[id].dob}</TableCell>
-
-                        <TableCell align="left">{data[id].contact}</TableCell>
-
-                        <TableCell align="left">
-                          <IconButton size="large" color="inherit" onClick={() => handleLink} >
-                            <Iconify icon={'material-symbols:edit-outline'}/>
-                          </IconButton>
-                          <IconButton size="large" color="inherit" onClick={() => deletePregnancy()}>
-                            <Iconify icon={'material-symbols:delete-outline'} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      )
-                    })} */}
 
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
@@ -405,61 +302,6 @@ export default function UserPage() {
           />
         </Card>
       </Container>
-
-
-      <div>
-      <Dialog open={open1} onClose={handleClose1}>
-        <DialogTitle>Add Pregnancy</DialogTitle>
-        <DialogContent>
-          <form onSubmit={onSubmitNewPregnancy}>
-            <Stack spacing={2} margin={2} >
-              <TextField label="Full Name" fullWidth onChange={(e) => setNewPregnancyName(e.target.value)}/>
-              <TextField label="Age" fullWidth onChange={(e) => setNewPregnancyAge(e.target.value)}/>
-              <LocalizationProvider dateAdapter={AdapterDayjs} >
-                <DatePicker selected={newPregnancyDob} onChange={handleDateChange} label="Date of Birth"/>
-              </LocalizationProvider>
-              <TextField label="Contact No." fullWidth onChange={(e) => setNewPregnancyContact(e.target.value)}/>
-            </Stack>
-
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose1} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={onSubmitNewPregnancy} color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-
-    <div>
-      <Dialog open={modalOpen} onClose={handleClose}>
-        <DialogTitle>Edit Pregnancy</DialogTitle>
-        <DialogContent>
-          <form onSubmit={updateUser}>
-            <Stack spacing={2} margin={2} >
-              <TextField label="Full Name" fullWidth onChange={(e) => setupdatePregnancyName(e.target.value)}/>
-              <TextField label="Age" fullWidth onChange={(e) => setupdatePregnancyAge(e.target.value)}/>
-              <LocalizationProvider dateAdapter={AdapterDayjs} >
-                <DatePicker selected={updatePregnancyDob} onChange={handleDateChange1} label="Date of Birth"/>
-              </LocalizationProvider>
-              <TextField label="Contact No." fullWidth onChange={(e) => setupdatePregnancyContact(e.target.value)}/>
-            </Stack>
-          </form>
-        </DialogContent>
-        <DialogActions>
-        <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => {updateUser(modalData.id), setModalOpen(false)}} color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-
     </>
   );
 }

@@ -68,11 +68,11 @@ export default function BlogPostCard({ post, index }) {
   ];
 
   return (
-    <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
+    <Grid item xs={6} sm={12} md={12}>
       <Card sx={{ position: 'relative' }}>
         <StyledCardMedia
           sx={{
-            ...((latestPostLarge || latestPost) && {
+           
               pt: 'calc(100% * 4 / 3)',
               '&:after': {
                 top: 0,
@@ -82,13 +82,8 @@ export default function BlogPostCard({ post, index }) {
                 position: 'absolute',
                 bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
               },
-            }),
-            ...(latestPostLarge && {
-              pt: {
-                xs: 'calc(100% * 4 / 3)',
-                sm: 'calc(100% * 3 / 4.66)',
-              },
-            }),
+            
+
           }}
         >
           <SvgColor
@@ -104,19 +99,6 @@ export default function BlogPostCard({ post, index }) {
               ...((latestPostLarge || latestPost) && { display: 'none' }),
             }}
           />
-          <StyledAvatar
-            alt={author.name}
-            src={author.avatarUrl}
-            sx={{
-              ...((latestPostLarge || latestPost) && {
-                zIndex: 9,
-                top: 24,
-                left: 24,
-                width: 40,
-                height: 40,
-              }),
-            }}
-          />
 
           <StyledCover alt={title} src={cover} />
         </StyledCardMedia>
@@ -124,26 +106,20 @@ export default function BlogPostCard({ post, index }) {
         <CardContent
           sx={{
             pt: 4,
-            ...((latestPostLarge || latestPost) && {
               bottom: 0,
               width: '100%',
               position: 'absolute',
-            }),
+
           }}
         >
-          <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-            {fDate(createdAt)}
-          </Typography>
 
           <StyledTitle
             color="inherit"
             variant="subtitle2"
             underline="hover"
             sx={{
-              ...(latestPostLarge && { typography: 'h5', height: 60 }),
-              ...((latestPostLarge || latestPost) && {
-                color: 'common.white',
-              }),
+            typography: 'h5', height: 60 ,
+            color: 'common.white',
             }}
           >
             {title}
@@ -162,8 +138,6 @@ export default function BlogPostCard({ post, index }) {
                   }),
                 }}
               >
-                <Iconify icon={info.icon} sx={{ width: 16, height: 16, mr: 0.5 }} />
-                <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
               </Box>
             ))}
           </StyledInfo>

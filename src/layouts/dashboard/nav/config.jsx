@@ -24,7 +24,7 @@ const navConfig = [
   },
   {
     title: 'Goals',
-    path: '/dashboard/blog',
+    path: '/dashboard/goals',
     icon: <Iconify icon={'octicon:goal-16'}/>,
   },
 

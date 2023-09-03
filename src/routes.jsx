@@ -16,6 +16,7 @@ import { auth } from './firebase/firebaseConfig';
 import AddPregnancy from './pages/AddPregnancy';
 import EditPregnancy from './pages/EditPregnancy';
 import ViewPage from './pages/ViewPage';
+import GoalsPage from './pages/GoalsPage';
 // ----------------------------------------------------------------------
 
 
@@ -52,7 +53,8 @@ export default function Router() {
         { path: 'app', element: <ProtectedRoute><DashboardAppPage /></ProtectedRoute> },
         { path: 'user', element:  <ProtectedRoute><UserPage /></ProtectedRoute>},
         { path: 'products', element: <ProtectedRoute><ProductsPage /></ProtectedRoute> },
-        { path: 'blog', element: <ProtectedRoute><BlogPage /></ProtectedRoute> },
+        { path: 'blogs', element: <ProtectedRoute><BlogPage /></ProtectedRoute> },
+        { path: 'goals', element: <ProtectedRoute><GoalsPage /></ProtectedRoute> },
         { path: 'add', element: <ProtectedRoute><AddPregnancy /></ProtectedRoute>,},
         { path: 'user/edit/:id', element: <ProtectedRoute><EditPregnancy /></ProtectedRoute>,},
         { path: 'user/view/:id', element: <ProtectedRoute><ViewPage /></ProtectedRoute>,},
