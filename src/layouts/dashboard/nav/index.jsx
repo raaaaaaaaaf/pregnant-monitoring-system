@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
-import { auth } from '../../../firebase/firebaseConfig';
+import { auth, db } from '../../../firebase/firebaseConfig';
 // mock
 
 // hooks
@@ -15,8 +15,11 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
+import navConfig1 from './config1';
 import avtimg from '../../../assets/avatar_default.jpg'
 import { AuthContext } from '../../../context/AuthContext';
+import { doc, getDoc } from 'firebase/firestore';
+import Loading from '../../../components/loading/Loading';
 // ----------------------------------------------------------------------
 
 const NAV_WIDTH = 280;
@@ -38,8 +41,9 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
-  const {currentUser} = useContext(AuthContext);
-  const isDesktop = useResponsive('up', 'lg');
+  const {currentUser, userData, loading} = useContext(AuthContext);
+  const isDesktop = useResponsive('up', 'lg'); 
+
 
   useEffect(() => {
     if (openNav) {
@@ -58,36 +62,39 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Logo />
       </Box>
-
-      <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none">
-          <StyledAccount>
-          <Avatar src={currentUser.photoURL ?? avtimg} alt="photoURL" />
-          {currentUser ? (
-            <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-              {currentUser.displayName ?? "Loading..."}
-              </Typography>
-
-              <Typography variant="body2" sx={{ color: 'text.secondary' }} >
-              Admin
-              </Typography>
-            </Box>
-
+      {loading ? (
+        <Box sx={{ ml: 2 }}>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }} >
+                  Loading...
+                  </Typography>
+        </Box>
           ) : (
-            <Box sx={{ ml: 2 }}>
-
-              <Typography variant="body2" sx={{ color: 'text.secondary' }} >
-              Loading...
-              </Typography>
-            </Box>
+            <Box sx={{ mb: 5, mx: 2.5 }}>
+            <Link underline="none">
+              <StyledAccount>
+    
+              <Avatar src={currentUser.photoURL ?? avtimg} alt="photoURL" />
+                <Box sx={{ ml: 2 }}>
+                  <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                  {currentUser.displayName}
+                  </Typography>
+                  {userData.isAdmin ? (
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }} >
+                  Admin
+                  </Typography>
+                  ) : (
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }} >
+                  Officer
+                  </Typography>
+                  )}
+                </Box>
+              </StyledAccount>
+            </Link>
+          </Box>    
 
           )}
 
-          </StyledAccount>
-        </Link>
-      </Box>
-
+      
       <NavSection data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />

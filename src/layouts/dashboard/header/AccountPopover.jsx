@@ -8,7 +8,7 @@ import { auth } from '../../../firebase/firebaseConfig';
 import { useNavigate, Link } from 'react-router-dom';
 import avtimg from '../../../assets/avatar_default.jpg'
 import { AuthContext } from '../../../context/AuthContext';
-
+import Loading from '../../../components/loading/Loading';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -25,7 +25,7 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const nav = useNavigate();
 
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, userData, loading } = useContext(AuthContext);
   
 
 
@@ -48,6 +48,10 @@ export default function AccountPopover() {
 
   return (
     <>
+    {loading ? (
+      <Loading/>
+    ) : (
+      <>
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -87,22 +91,16 @@ export default function AccountPopover() {
           },
         }}
       >
-      {currentUser ? (
+     
           <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-          {currentUser.displayName ?? "Loading..."}
+          {currentUser.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {currentUser.email ?? "Loading..."}
+            {currentUser.email}
           </Typography>
-        </Box>
-      ) : (
-          <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle2" noWrap>
-            Loading...
-          </Typography>
-        </Box>
-      )}
+          </Box>
+     
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
@@ -111,5 +109,9 @@ export default function AccountPopover() {
         </MenuItem>
       </Popover>
     </>
+    )}
+    </>
+
+
   );
 }

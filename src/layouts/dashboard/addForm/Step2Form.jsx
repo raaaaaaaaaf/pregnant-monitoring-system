@@ -34,6 +34,7 @@ export default function Step2Form() {
             label="Temperature"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -46,6 +47,7 @@ export default function Step2Form() {
             label="Assesment of Gestitional Age"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
 
@@ -59,6 +61,7 @@ export default function Step2Form() {
             label="Pulse Rate"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -70,6 +73,7 @@ export default function Step2Form() {
             label="Fundal Height"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -82,6 +86,7 @@ export default function Step2Form() {
             label="Blood Pressure"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -94,6 +99,7 @@ export default function Step2Form() {
             label="Fetal Heart Tone"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -106,6 +112,7 @@ export default function Step2Form() {
             label="Respiration Rate"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -115,9 +122,10 @@ export default function Step2Form() {
             name="pres"
             value={formData.pres}
             onChange={handleInputChange}
-            label="P.R.E.S"
+            label="P.R.E.Syndrome"
             fullWidth
             variant="standard"
+            
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -130,6 +138,7 @@ export default function Step2Form() {
             label="Weight"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -139,9 +148,10 @@ export default function Step2Form() {
             name="pros"
             value={formData.pros}
             onChange={handleInputChange}
-            label="P.R.O.S"
+            label="P.O.Syndrome"
             fullWidth
             variant="standard"
+            
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -154,6 +164,7 @@ export default function Step2Form() {
             label="Height"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -166,6 +177,7 @@ export default function Step2Form() {
             label="Body Mass Index"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
       </Grid>

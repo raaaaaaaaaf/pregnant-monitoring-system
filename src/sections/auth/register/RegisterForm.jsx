@@ -29,7 +29,8 @@ export default function RegisterForm() {
         uid: res.user.uid,
         displayName: name,
         email: email,
-        password: password
+        password: password,
+        isAdmin: false,
       })
       Swal.fire({
         icon: 'success',

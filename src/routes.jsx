@@ -17,26 +17,37 @@ import AddPregnancy from './pages/AddPregnancy';
 import EditPregnancy from './pages/EditPregnancy';
 import ViewPage from './pages/ViewPage';
 import GoalsPage from './pages/GoalsPage';
+import Swal from 'sweetalert2';
+import Loading from './components/loading/Loading';
 // ----------------------------------------------------------------------
 
 
 
 export default function Router() {
-  const {currentUser} = useContext(AuthContext);
 
   const ProtectedRoute = ({ children }) => {
-    if (!currentUser) {
-      return <Navigate to="/login" replace/>
+    const { currentUser, loading, error } = useContext(AuthContext);
+    if (loading) {
+      // Render a loading indicator while authentication is in progress
+      
+      return <Loading />;
     }
-    return children
-  }
+  
+    if (error) {
+      // Render an error message if there was an authentication error
+      return <div>Error...</div>;
+    }
+  
+    if (!currentUser) {
+      // Redirect to the login page if the user is not authenticated
+      return <Navigate to="/login" />;
+    }
+     // Render the children if the user is authenticated
+    return children;
+  };
 
 
   const routes = useRoutes([
-    {
-      path: '/',
-      element: <Navigate to="/login" />,
-    },
     {
       path: 'login',
       element: <LoginPage />,
@@ -47,9 +58,9 @@ export default function Router() {
     },
     {
       path: 'dashboard',
-      element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
+      element: <DashboardLayout />,
       children: [
-        { element: <ProtectedRoute><Navigate to="/dashboard/app" /></ProtectedRoute>, index: true },
+        { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <ProtectedRoute><DashboardAppPage /></ProtectedRoute> },
         { path: 'user', element:  <ProtectedRoute><UserPage /></ProtectedRoute>},
         { path: 'products', element: <ProtectedRoute><ProductsPage /></ProtectedRoute> },

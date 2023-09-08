@@ -10,7 +10,7 @@ import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
 import { signInWithPopup } from 'firebase/auth';
-import { auth, provider, storage, db } from '../firebase/firebaseConfig';
+import { auth, provider, db } from '../firebase/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';

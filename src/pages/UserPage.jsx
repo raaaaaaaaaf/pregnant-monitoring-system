@@ -41,6 +41,7 @@ import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase
 import avt from '../assets/avatar_default.jpg'
 import Swal from 'sweetalert2';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -98,7 +99,7 @@ export default function UserPage() {
 
   const [pregnancyList, setPregnancyList] = useState([]);
 
-  const nav = useNavigate();
+  const {userData} = useContext(AuthContext)
 
 
   const pregnancyCollectionRef = collection(db, "pregnancy")
@@ -238,7 +239,8 @@ export default function UserPage() {
 
                         <TableCell align="left">{pregnancyList[id].contact}</TableCell>
 
-                        <TableCell align="left">
+                      {userData.isAdmin ? (
+                          <TableCell align="left">
                           <Link to={`edit/${pregnancyList[id].id}`} style={{ textDecoration: 'none', color: 'black'}}>
                           <IconButton size="large" color="inherit" onClick={() =>setFormId(pregnancyList[id].id)}>
                             <Iconify icon={'material-symbols:edit-outline'}/>
@@ -253,6 +255,19 @@ export default function UserPage() {
                           </IconButton>
                           </Link>
                         </TableCell>
+
+                      ) : (
+                        <TableCell align="left">
+                        <Link to={`view/${pregnancyList[id].id}`} style={{ textDecoration: 'none', color: 'black'}}>
+                        <IconButton size="large" color="inherit">
+                          <Iconify icon={'teenyicons:pdf-outline'}/>
+                        </IconButton>
+                        </Link>
+                      </TableCell>
+                        
+
+                      )}
+
                       </TableRow>
                       )
                   })}
