@@ -39,8 +39,7 @@ const {formData, setFormData, formId} = useContext(EditFormContext);
 
 const navigate = useNavigate();
 
-
-
+const {id} = useParams();
 const editPregnancy = async (id) => {
     try {
         const pregnancyDoc = doc(db, "pregnancy", id)

@@ -62,14 +62,14 @@ function NewsItem({ news }) {
           {title}
         </Link>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+        {/* <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
           {description}
-        </Typography>
+        </Typography> */}
       </Box>
 
-      <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
+      {/* <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
         {fToNow(postedAt)}
-      </Typography>
+      </Typography> */}
     </Stack>
   );
 }

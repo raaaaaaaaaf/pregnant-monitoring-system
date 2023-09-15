@@ -6,7 +6,7 @@ import Iconify from '../../../components/iconify/Iconify';
 
 
 
-const navConfig1 = [
+const userConfig = [
   {
     title: 'dashboard',
     path: '/dashboard/app',
@@ -25,4 +25,4 @@ const navConfig1 = [
 
 ];
 
-export default navConfig1;
+export default userConfig;

@@ -20,13 +20,23 @@ import {
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
+import Loading from '../components/loading/Loading';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
   const [amount, setAmount] = useState(null);
+  const [lastMonth, setLastMonth] = useState(null);
+  const [prevMonth, setPrevMonth] = useState(null);
   const [diff, setDiff] = useState(null)
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 2000)
+  } ,[])
 
 
 
@@ -44,6 +54,8 @@ export default function DashboardAppPage() {
       const pregnancyAmount = await getDocs(q);
 
       setAmount (pregnancyAmount.docs.length)
+      setLastMonth (lastMonthData.docs.length)
+      setPrevMonth ( prevMonthData.docs.length)
       setDiff ((lastMonthData.docs.length - prevMonthData.docs.length) / (prevMonthData.docs.length) * 100)
     }
     fetchData()
@@ -54,7 +66,9 @@ export default function DashboardAppPage() {
       <Helmet>
         <title> Dashboard | Pregnancy-monitoring-system </title>
       </Helmet>
-
+    {loading ? (
+      <Loading/>
+    ) : (
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
           Pregnancy Monitoring System
@@ -74,15 +88,17 @@ export default function DashboardAppPage() {
               title="Pregnants"
               subheader= {`${diff}% more than last month`}
               chartLabels={[
-                '07/01/2023',
-                '08/01/2023',
+                '2023-07',
+                '2023-08',
+                '2023-09',
+                '2023-10',
               ]}
               chartData={[
                 {
                   name: 'Pregnancy',
                   type: 'column',
                   fill: 'solid',
-                  data: [2,3],
+                  data: [0,`${prevMonth}`,`${lastMonth}`],
                 },
 
               ]}
@@ -109,6 +125,8 @@ export default function DashboardAppPage() {
 
         </Grid>
       </Container>
+    )}
+
     </>
   );
 }

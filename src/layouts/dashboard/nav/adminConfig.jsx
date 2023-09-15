@@ -6,7 +6,7 @@ import Iconify from '../../../components/iconify/Iconify';
 
 const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
 
-const navConfig = [
+const adminConfig = [
   {
     title: 'dashboard',
     path: '/dashboard/app',
@@ -30,4 +30,4 @@ const navConfig = [
 
 ];
 
-export default navConfig;
+export default adminConfig;

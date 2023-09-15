@@ -36,12 +36,15 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 
 import { db } from '../firebase/firebaseConfig';
-import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc } from 'firebase/firestore';
 
 import avt from '../assets/avatar_default.jpg'
 import Swal from 'sweetalert2';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import Loading from '../components/loading/Loading';
+import _ from 'lodash';
+import { EditFormContext } from '../context/EditContext';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -101,26 +104,38 @@ export default function UserPage() {
 
   const {userData} = useContext(AuthContext)
 
+  const {setFormId} = useContext(EditFormContext)
 
-  const pregnancyCollectionRef = collection(db, "pregnancy")
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
-    getPregnancyList(); 
+    setTimeout(() => {
+      setLoading(false)
+    }, 2000)
+  } ,[])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = [];
+        const dataRef = query(collection(db, "pregnancy"))
+        const dataSnap = await getDocs(dataRef)
+        dataSnap.forEach((doc) => {
+          data.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        setPregnancyList(data)
+      } catch(err) {
+        console.error(err);
+      }
+    }
+    fetchData();
   }, [])
 
-  const getPregnancyList = async () => {
-    try {
-      const data = await getDocs(pregnancyCollectionRef);
-      const filteredData = data.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setPregnancyList(filteredData);
-      console.log(data)
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  const sortedDocData = _.sortBy(pregnancyList, (data) => data.timeStamp.seconds).reverse();
 
 
   const deletePregnancy = async (id) => {
@@ -131,7 +146,6 @@ export default function UserPage() {
       'success'
     )
     await deleteDoc(pregnancyDoc);
-    getPregnancyList();
   };
 
 
@@ -192,130 +206,135 @@ export default function UserPage() {
       <Helmet>
         <title> Pregnants | Pregnancy Monitoring System </title>
       </Helmet>
-
+    
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Pregnancy Records
           </Typography>
         </Stack>
+    {loading ? (
+      <Loading/>
+    ) : (
+      <Card>
+      <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
-        <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+      <Scrollbar>
+        <TableContainer sx={{ minWidth: 800 }}>
+          <Table>
+            <UserListHead
+              order={order}
+              orderBy={orderBy}
+              headLabel={TABLE_HEAD}
+              rowCount={pregnancyList.length}
+              numSelected={selected.length}
+              onRequestSort={handleRequestSort}
+              onSelectAllClick={handleSelectAllClick}
+            />
+            <TableBody>
+              {sortedDocData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((pregnancy, index) => {
+                const {id, name, age, dob, contact} = pregnancy
+                const selectedUser = selected.indexOf(index) !== -1;
+                return (
 
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={pregnancyList.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {Object.keys(pregnancyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)).map((id, index) => {
-                    const selectedUser = selected.indexOf(pregnancyList[id].name) !== -1;
-                    return (
+                  <TableRow hover tabIndex={index} role="checkbox" selected={selectedUser} key={id}>
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                    </TableCell>
+                    <TableCell component="th" scope="row" padding="none">
+                      <Stack direction="row" alignItems="center" spacing={2}>
+                      <Avatar alt={name} src={avt} />
+                        <Typography variant="subtitle2" noWrap>
+                          {name}
+                        </Typography>
+                      </Stack>
+                    </TableCell>
 
-                      <TableRow hover tabIndex={-1} role="checkbox" selected={selectedUser} key={id}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          <Avatar alt={pregnancyList[id].name} src={avt} />
-                            <Typography variant="subtitle2" noWrap>
-                              {pregnancyList[id].name}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
+                    <TableCell align="left">{age}</TableCell>
 
-                        <TableCell align="left">{pregnancyList[id].age}</TableCell>
+                    <TableCell align="left">{dob}</TableCell>
 
-                        <TableCell align="left">{pregnancyList[id].dob}</TableCell>
+                    <TableCell align="left">{contact}</TableCell>
 
-                        <TableCell align="left">{pregnancyList[id].contact}</TableCell>
+                  {userData.role === 'Admin' ? (
+                      <TableCell align="left">
+                      <Link to={`edit/${id}`} style={{ textDecoration: 'none', color: 'black'}}>
+                      <IconButton size="large" color="inherit" onClick={() =>setFormId(id)}>
+                        <Iconify icon={'material-symbols:edit-outline'}/>
+                      </IconButton>
+                      </Link>
+                      <IconButton size="large" color="inherit" onClick={() => deletePregnancy(id)}>
+                        <Iconify icon={'material-symbols:delete-outline'} />
+                      </IconButton>
+                      <Link to={`view/${id}`} style={{ textDecoration: 'none', color: 'black'}}>
+                      <IconButton size="large" color="inherit">
+                        <Iconify icon={'teenyicons:pdf-outline'}/>
+                      </IconButton>
+                      </Link>
+                    </TableCell>
 
-                      {userData.isAdmin ? (
-                          <TableCell align="left">
-                          <Link to={`edit/${pregnancyList[id].id}`} style={{ textDecoration: 'none', color: 'black'}}>
-                          <IconButton size="large" color="inherit" onClick={() =>setFormId(pregnancyList[id].id)}>
-                            <Iconify icon={'material-symbols:edit-outline'}/>
-                          </IconButton>
-                          </Link>
-                          <IconButton size="large" color="inherit" onClick={() => deletePregnancy(pregnancyList[id].id)}>
-                            <Iconify icon={'material-symbols:delete-outline'} />
-                          </IconButton>
-                          <Link to={`view/${pregnancyList[id].id}`} style={{ textDecoration: 'none', color: 'black'}}>
-                          <IconButton size="large" color="inherit">
-                            <Iconify icon={'teenyicons:pdf-outline'}/>
-                          </IconButton>
-                          </Link>
-                        </TableCell>
+                  ) : (
+                    <TableCell align="left">
+                    <Link to={`view/${id}`} style={{ textDecoration: 'none', color: 'black'}}>
+                    <IconButton size="large" color="inherit">
+                      <Iconify icon={'teenyicons:pdf-outline'}/>
+                    </IconButton>
+                    </Link>
+                  </TableCell>
+                    
 
-                      ) : (
-                        <TableCell align="left">
-                        <Link to={`view/${pregnancyList[id].id}`} style={{ textDecoration: 'none', color: 'black'}}>
-                        <IconButton size="large" color="inherit">
-                          <Iconify icon={'teenyicons:pdf-outline'}/>
-                        </IconButton>
-                        </Link>
-                      </TableCell>
-                        
-
-                      )}
-
-                      </TableRow>
-                      )
-                  })}
-
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
                   )}
-                </TableBody>
 
-                {isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
+                  </TableRow>
+                  )
+              })}
 
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={pregnancyList.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
+            {isNotFound && (
+              <TableBody>
+                <TableRow>
+                  <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                    <Paper
+                      sx={{
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Typography variant="h6" paragraph>
+                        Not found
+                      </Typography>
+
+                      <Typography variant="body2">
+                        No results found for &nbsp;
+                        <strong>&quot;{filterName}&quot;</strong>.
+                        <br /> Try checking for typos or using complete words.
+                      </Typography>
+                    </Paper>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            )}
+          </Table>
+        </TableContainer>
+      </Scrollbar>
+
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={pregnancyList.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Card>
+    )}
+
       </Container>
     </>
   );

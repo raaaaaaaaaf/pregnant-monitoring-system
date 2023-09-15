@@ -17,7 +17,6 @@ import AddPregnancy from './pages/AddPregnancy';
 import EditPregnancy from './pages/EditPregnancy';
 import ViewPage from './pages/ViewPage';
 import GoalsPage from './pages/GoalsPage';
-import Swal from 'sweetalert2';
 import Loading from './components/loading/Loading';
 // ----------------------------------------------------------------------
 
@@ -27,15 +26,9 @@ export default function Router() {
 
   const ProtectedRoute = ({ children }) => {
     const { currentUser, loading, error } = useContext(AuthContext);
+
     if (loading) {
-      // Render a loading indicator while authentication is in progress
-      
-      return <Loading />;
-    }
-  
-    if (error) {
-      // Render an error message if there was an authentication error
-      return <div>Error...</div>;
+      return <Loading/>
     }
   
     if (!currentUser) {
@@ -49,6 +42,10 @@ export default function Router() {
 
   const routes = useRoutes([
     {
+      path: '/',
+      element: <Navigate to="/login" replace />, // Redirect to the login page
+    },
+    {
       path: 'login',
       element: <LoginPage />,
     },
@@ -58,11 +55,12 @@ export default function Router() {
     },
     {
       path: 'dashboard',
-      element: <DashboardLayout />,
+      element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        // Remove the index: true from this route
+        { element: <ProtectedRoute><Navigate to="/dashboard/app" /></ProtectedRoute>, index: true },
         { path: 'app', element: <ProtectedRoute><DashboardAppPage /></ProtectedRoute> },
-        { path: 'user', element:  <ProtectedRoute><UserPage /></ProtectedRoute>},
+        { path: 'user', element:  <ProtectedRoute><UserPage /></ProtectedRoute> },
         { path: 'products', element: <ProtectedRoute><ProductsPage /></ProtectedRoute> },
         { path: 'blogs', element: <ProtectedRoute><BlogPage /></ProtectedRoute> },
         { path: 'goals', element: <ProtectedRoute><GoalsPage /></ProtectedRoute> },
@@ -74,7 +72,7 @@ export default function Router() {
     {
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <ProtectedRoute><Navigate to="/dashboard/app" /></ProtectedRoute>, index: true },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
@@ -84,6 +82,7 @@ export default function Router() {
       element: <Navigate to="/404" replace />,
     },
   ]);
+  
 
   return routes;
 }

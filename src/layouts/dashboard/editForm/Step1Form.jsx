@@ -63,6 +63,7 @@ export default function Step1Form() {
             label="Age"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -97,6 +98,7 @@ export default function Step1Form() {
             label="PHILHEALTH"
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
         <Grid item xs={12}>
@@ -133,6 +135,7 @@ export default function Step1Form() {
             label="Contact No."
             fullWidth
             variant="standard"
+            type="number"
           />
         </Grid>
       </Grid>

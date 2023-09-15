@@ -14,8 +14,8 @@ import Logo from '../../../components/logo';
 import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
-import navConfig from './config';
-import navConfig1 from './config1';
+import adminConfig from './adminConfig'
+import userConfig from './userConfig'
 import avtimg from '../../../assets/avatar_default.jpg'
 import { AuthContext } from '../../../context/AuthContext';
 import { doc, getDoc } from 'firebase/firestore';
@@ -78,24 +78,23 @@ export default function Nav({ openNav, onCloseNav }) {
                   <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
                   {currentUser.displayName}
                   </Typography>
-                  {userData.isAdmin ? (
                   <Typography variant="body2" sx={{ color: 'text.secondary' }} >
-                  Admin
+                  {userData.role}
                   </Typography>
-                  ) : (
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }} >
-                  Officer
-                  </Typography>
-                  )}
                 </Box>
               </StyledAccount>
             </Link>
           </Box>    
 
           )}
+      {userData.role === 'Admin' ? (
+        <NavSection data={adminConfig} />
+      ) : (
+        <NavSection data={userConfig} />
+      )}
 
       
-      <NavSection data={navConfig} />
+      
 
       <Box sx={{ flexGrow: 1 }} />
 

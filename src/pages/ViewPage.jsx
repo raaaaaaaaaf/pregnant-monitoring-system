@@ -4,6 +4,7 @@ import { db } from '../firebase/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import { Page, Text, View, Document, StyleSheet, pdf, Image, Font, Line } from '@react-pdf/renderer';
 import logo from '../assets/logo1.png'
+import logo1 from '../assets/doh.png'
 
 Font.register({
     family: 'Oswald',
@@ -15,34 +16,32 @@ const styles = StyleSheet.create({
     page: {
         fontFamily: 'Oswald',
         padding: 40,
+        
       },
       top : {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
       },
       leftlogo: {
-        width: "20%",
-        marginLeft: 'auto',
+        marginRight: 70,
       },
       rightlogo: {
-        width: "20%",
-        marginRight: 'auto',
+        marginLeft: 70,
       },
       image: {
-        width: '100%',
-        height: 'auto',
+        width: 70, // Adjust the width as needed
+        height: 70,
       },
       title: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
         textAlign: "center",
-        width: '40%',
+        zIndex: 1,
       },
       author: {
         fontSize: 14,
         textAlign: "center",
-        width: '20%',
       },
       columnsContainer: {
         display: 'flex',
@@ -137,17 +136,17 @@ const ViewPage = () => {
         <Document>
             <Page size="A4" style={styles.page}>
               <View style={styles.top}>
-                {/* <View style={styles.leftlogo}>
+                <View style={styles.leftlogo}>
                   <Image style={styles.image} src={logo}></Image>
-                </View> */}
+                </View>
                 <Text style={styles.title}>INDIVIDUAL TREATMENT RECORD</Text>
-                <Text style={styles.author}>Prenatal Care</Text>
-                {/* <View style={styles.rightlogo}>
-                  <Image style={styles.image} src={logo}></Image>
-                </View> */}
+                
+                <View style={styles.rightlogo}>
+                  <Image style={styles.image} src={logo1}></Image>
+                </View>
               
               </View>
-
+              <Text style={styles.author}>Prenatal Care</Text>
                 <View style={styles.columnsContainer}>
                 {/* Left Column */}
                 <View style={styles.column}>

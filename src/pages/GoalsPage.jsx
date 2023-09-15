@@ -1,46 +1,73 @@
-import * as React from 'react';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
+import { AppNewsUpdate, AppOrderTimeline } from '../sections/@dashboard/app';
+import { Card, CardHeader, Grid } from '@mui/material';
+import { faker } from '@faker-js/faker';
+import { useEffect, useState } from 'react';
+import Loading from '../components/loading/Loading';
 
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
 
 export default function GoalsPage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 2000)
+  } ,[])
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
-      <CssBaseline />
-      {/* Hero unit */}
-      <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
-        <Typography
-          component="h1"
-          variant="h2"
-          align="center"
-          color="text.primary"
-          gutterBottom
-        >
-          Major Goals of Prenatal Care
-        </Typography>
-        <Typography variant="h5" align="" color="text.secondary" component="p">
-         1. Ensure a safe birth for mother and child by promoting good health and reducing risk factor.
-        </Typography>
-        <Typography variant="h5" align="" color="text.secondary" component="p">
-         2. Teach health habits that may be continued after pregnancy.
-        </Typography>
-        <Typography variant="h5" align="" color="text.secondary" component="p">
-         3. Educate in self-care for pregnancy.
-        </Typography>
-        <Typography variant="h5" align="" color="text.secondary" component="p">
-         4. Provide physical care.
-        </Typography>
-        <Typography variant="h5" align="" color="text.secondary" component="p">
-         5. Prepare parents for the responsibilities of parenthood
-        </Typography>
-      </Container>
-    </ThemeProvider>
+<>
+{loading ? (
+  <Loading/>
+) : (
+  <Grid item xs={12} md={6} lg={8}>
+            <AppNewsUpdate
+              title="Major Goals of Prenatal Care"
+              list={[
+                {
+                  id: faker.datatype.uuid(),
+                  title: 'Ensure a safe birth for mother and child by promoting good health habits and reducing risk factors.',
+                  description: faker.name.jobTitle(),
+                  image: `/assets/images/covers/cover_1.jpg`,
+                  postedAt: faker.date.recent(),
+                },
+                {
+                  id: faker.datatype.uuid(),
+                  title: 'Teach health habits that may be continued after pregnancy.',
+                  description: faker.name.jobTitle(),
+                  image: `/assets/images/covers/cover_2.png`,
+                  postedAt: faker.date.recent(),
+                },
+                {
+                  id: faker.datatype.uuid(),
+                  title: 'Educate in self-care for pregnancy.',
+                  description: faker.name.jobTitle(),
+                  image: `/assets/images/covers/cover_3.jpg`,
+                  postedAt: faker.date.recent(),
+                },
+                {
+                  id: faker.datatype.uuid(),
+                  title: 'Provide physical care.',
+                  description: faker.name.jobTitle(),
+                  image: `/assets/images/covers/cover_4.jpg`,
+                  postedAt: faker.date.recent(),
+                },
+                {
+                  id: faker.datatype.uuid(),
+                  title: 'Prepare parents for the responsibilites of parenthood.',
+                  description: faker.name.jobTitle(),
+                  image: `/assets/images/covers/cover_5.png`,
+                  postedAt: faker.date.recent(),
+                },
+              ]}
+            />
+  </Grid>
+)}
+
+</>
   );
 }
