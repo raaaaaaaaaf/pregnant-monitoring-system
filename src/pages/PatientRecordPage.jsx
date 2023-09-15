@@ -49,8 +49,10 @@ import { EditFormContext } from '../context/EditContext';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'email', label: 'E-mail', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'age', label: 'Age', alignRight: false },
+  { id: 'dob', label: 'Date of Birth', alignRight: false },
+  { id: 'cp', label: 'Contact No.', alignRight: false },
+  { id: 'act', label: 'Action', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -84,7 +86,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
+export default function PatientRecordPage() {
 
   const [page, setPage] = useState(0);
 
@@ -98,7 +100,7 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [userList, setUserList] = useState([]);
+  const [pregnancyList, setPregnancyList] = useState([]);
 
   const {userData} = useContext(AuthContext)
 
@@ -117,7 +119,7 @@ export default function UserPage() {
     const fetchData = async () => {
       try {
         const data = [];
-        const dataRef = query(collection(db, "users"))
+        const dataRef = query(collection(db, "pregnancy"))
         const dataSnap = await getDocs(dataRef)
         dataSnap.forEach((doc) => {
           data.push({
@@ -125,13 +127,26 @@ export default function UserPage() {
             ...doc.data()
           });
         });
-        setUserList(data)
+        setPregnancyList(data)
       } catch(err) {
         console.error(err);
       }
     }
     fetchData();
   }, [])
+
+  const sortedDocData = _.sortBy(pregnancyList, (data) => data.timeStamp.seconds).reverse();
+
+
+  const deletePregnancy = async (id) => {
+    const pregnancyDoc = doc(db, "pregnancy", id)
+    Swal.fire(
+      'Deleted!',
+      'Information has been deleted.',
+      'success'
+    )
+    await deleteDoc(pregnancyDoc);
+  };
 
 
   const handleRequestSort = (event, property) => {
@@ -142,7 +157,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = userList.map((n) => n.name);
+      const newSelecteds = pregnancyList.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -180,22 +195,22 @@ export default function UserPage() {
 
 
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pregnancyList.length) : 0;
 
-  const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(pregnancyList, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
       <Helmet>
-        <title> Users | Pregnancy Monitoring System </title>
+        <title> Pregnants | Pregnancy Monitoring System </title>
       </Helmet>
     
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Users
+            Pregnancy Records
           </Typography>
         </Stack>
     {loading ? (
@@ -211,34 +226,51 @@ export default function UserPage() {
               order={order}
               orderBy={orderBy}
               headLabel={TABLE_HEAD}
-              rowCount={userList.length}
+              rowCount={pregnancyList.length}
               numSelected={selected.length}
               onRequestSort={handleRequestSort}
               onSelectAllClick={handleSelectAllClick}
             />
             <TableBody>
-              {userList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => {
-                const {id, displayName, email, role} = user
+              {sortedDocData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((pregnancy, index) => {
+                const {id, name, age, dob, contact} = pregnancy
                 const selectedUser = selected.indexOf(index) !== -1;
                 return (
 
                   <TableRow hover tabIndex={index} role="checkbox" selected={selectedUser} key={id}>
                     <TableCell padding="checkbox">
-                      <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, displayName)} />
+                      <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
                       <Stack direction="row" alignItems="center" spacing={2}>
-                      <Avatar alt={displayName} src={avt} />
+                      <Avatar alt={name} src={avt} />
                         <Typography variant="subtitle2" noWrap>
-                          {displayName}
+                          {name}
                         </Typography>
                       </Stack>
                     </TableCell>
 
-                    <TableCell align="left">{email}</TableCell>
+                    <TableCell align="left">{age}</TableCell>
 
-                    <TableCell align="left">{role}</TableCell>
+                    <TableCell align="left">{dob}</TableCell>
 
+                    <TableCell align="left">{contact}</TableCell>
+
+                      <TableCell align="left">
+                      <Link to={`edit/${id}`} style={{ textDecoration: 'none', color: 'black'}}>
+                      <IconButton size="large" color="inherit" onClick={() =>setFormId(id)}>
+                        <Iconify icon={'material-symbols:edit-outline'}/>
+                      </IconButton>
+                      </Link>
+                      <IconButton size="large" color="inherit" onClick={() => deletePregnancy(id)}>
+                        <Iconify icon={'material-symbols:delete-outline'} />
+                      </IconButton>
+                      <Link to={`view/${id}`} style={{ textDecoration: 'none', color: 'black'}}>
+                      <IconButton size="large" color="inherit">
+                        <Iconify icon={'teenyicons:pdf-outline'}/>
+                      </IconButton>
+                      </Link>
+                    </TableCell>
                   </TableRow>
                   )
               })}
@@ -280,7 +312,7 @@ export default function UserPage() {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={userList.length}
+        count={pregnancyList.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

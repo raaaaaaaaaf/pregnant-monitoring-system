@@ -30,7 +30,7 @@ export default function RegisterForm() {
         displayName: name,
         email: email,
         password: password,
-        role: "User"
+        role: "Officer"
       })
       Swal.fire({
         icon: 'success',

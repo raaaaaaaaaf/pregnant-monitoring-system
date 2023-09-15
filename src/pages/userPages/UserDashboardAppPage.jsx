@@ -4,7 +4,6 @@ import { faker } from '@faker-js/faker';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
 // components
-import Iconify from '../components/iconify';
 // sections
 import {
   AppTasks,
@@ -16,21 +15,21 @@ import {
   AppWidgetSummary,
   AppCurrentSubject,
   AppConversionRates,
-} from '../sections/@dashboard/app';
+} from '../../sections/@dashboard/app';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
-import Loading from '../components/loading/Loading';
+import { db } from '../../firebase/firebaseConfig';
+import Loading from '../../components/loading/Loading';
+
 
 // ----------------------------------------------------------------------
 
-export default function DashboardAppPage() {
+export default function UserDashboardAppPage() {
   const theme = useTheme();
   const [amount, setAmount] = useState(null);
   const [lastMonth, setLastMonth] = useState(null);
   const [prevMonth, setPrevMonth] = useState(null);
   const [diff, setDiff] = useState(null)
-  const [userCount, setUserCount] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,10 +42,6 @@ export default function DashboardAppPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-
-      const userRef = query(collection(db, "users"))
-      const userSnap = await getDocs(userRef)
-     
       const today = new Date();
       const lastMonth = new Date(new Date().setMonth(today.getMonth() -1))
       const prevMonth = new Date(new Date().setMonth(today.getMonth() -2))
@@ -58,7 +53,6 @@ export default function DashboardAppPage() {
       const prevMonthData = await getDocs(prevMonthQuery)
       const pregnancyAmount = await getDocs(q);
 
-      setUserCount(userSnap.docs.length)
       setAmount (pregnancyAmount.docs.length)
       setLastMonth (lastMonthData.docs.length)
       setPrevMonth ( prevMonthData.docs.length)
@@ -81,16 +75,11 @@ export default function DashboardAppPage() {
         </Typography>
 
         <Grid container spacing={3}>
-
-          <Grid item xs={12} sm={6} md={4}>
-            <AppWidgetSummary title="USERS" total={userCount} color="error" icon={'mdi:users-outline'} />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={6}>
             <AppWidgetSummary title="PREGNANTS" total={amount} color="error" icon={'healthicons:pregnant'} />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={6}>
             <AppWidgetSummary title="ALL RECORDS" total={amount} color="error" icon={'ant-design:save-filled'} />
           </Grid>
 

@@ -13,13 +13,18 @@ const adminConfig = [
     icon: <Iconify icon={'material-symbols:home-outline'}/>,
   },
   {
+    title: 'Users',
+    path: '/dashboard/user',
+    icon: <Iconify icon={'mdi:users-outline'}/>,
+  },
+  {
     title: 'Add Pregnant',
     path: '/dashboard/add',
     icon: <Iconify icon={'healthicons:pregnant'}/>,
   },
   {
     title: 'Pregnant Records',
-    path: '/dashboard/user',
+    path: '/dashboard/patients',
     icon: <Iconify icon={'vaadin:records'}/>,
   },
   {
