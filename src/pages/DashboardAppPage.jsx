@@ -29,6 +29,7 @@ export default function DashboardAppPage() {
   const [amount, setAmount] = useState(null);
   const [lastMonth, setLastMonth] = useState(null);
   const [prevMonth, setPrevMonth] = useState(null);
+  const [lastPrevMonth, setLastPrevMonth] = useState(null)
   const [diff, setDiff] = useState(null)
   const [userCount, setUserCount] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -50,18 +51,22 @@ export default function DashboardAppPage() {
       const today = new Date();
       const lastMonth = new Date(new Date().setMonth(today.getMonth() -1))
       const prevMonth = new Date(new Date().setMonth(today.getMonth() -2))
+      const lastPrevMonth = new Date(new Date().setMonth(today.getMonth() -3))
 
       const q = query(collection(db, "pregnancy"), where("timeStamp", "<=", today))
       const lastMonthQuery = query(collection(db, "pregnancy"), where("timeStamp", "<=", today), where("timeStamp", ">", lastMonth))
       const prevMonthQuery = query(collection(db, "pregnancy"), where("timeStamp", "<=", lastMonth), where("timeStamp", ">", prevMonth))
+      const lastPrevMonthQuery = query(collection(db, "pregnancy"), where("timeStamp", "<=", prevMonth), where("timeStamp", ">", lastPrevMonth))
       const lastMonthData = await getDocs(lastMonthQuery)
       const prevMonthData = await getDocs(prevMonthQuery)
+      const lastPrevMonthData = await getDocs(lastPrevMonthQuery)
       const pregnancyAmount = await getDocs(q);
 
       setUserCount(userSnap.docs.length)
       setAmount (pregnancyAmount.docs.length)
       setLastMonth (lastMonthData.docs.length)
       setPrevMonth ( prevMonthData.docs.length)
+      setLastPrevMonth (lastPrevMonthData.docs.length)
       setDiff ((lastMonthData.docs.length - prevMonthData.docs.length) / (prevMonthData.docs.length) * 100)
     }
     fetchData()
@@ -99,17 +104,16 @@ export default function DashboardAppPage() {
               title="Pregnants"
               subheader= {`${diff}% more than last month`}
               chartLabels={[
-                '2023-07',
-                '2023-08',
-                '2023-09',
-                '2023-10',
+                '2023-07-01',
+                '2023-08-01',
+                '2023-09-01',
               ]}
               chartData={[
                 {
                   name: 'Pregnancy',
                   type: 'column',
                   fill: 'solid',
-                  data: [0,`${prevMonth}`,`${lastMonth}`],
+                  data: [`${lastPrevMonth}`,`${prevMonth}`,`${lastMonth}`],
                 },
 
               ]}

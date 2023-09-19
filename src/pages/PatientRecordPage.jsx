@@ -53,6 +53,7 @@ import Loading from "../components/loading/Loading";
 import _ from "lodash";
 import AddModal from "../components/modal/AddModal";
 import EditModal from "../components/modal/EditModal";
+import { SelectYearContext } from "../context/SelectYearContext";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -129,6 +130,8 @@ export default function PatientRecordPage() {
 
   const [isEditModalOpen, setEditModalOpen] = useState(false)
 
+  const { selectedYear, setSelectedYear } = useContext(SelectYearContext);
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -147,13 +150,45 @@ export default function PatientRecordPage() {
             ...doc.data(),
           });
         });
-        setPregnancyList(data);
+  
+        // Apply filtering only when a year is selected
+        if (selectedYear) {
+          const filteredData = data.filter((item) => {
+            // Convert Firestore timestamp to a JavaScript Date object
+            const timestamp = item.timeStamp.toDate();
+            
+            // Get the year from the Date object
+            const year = timestamp.getFullYear();
+            
+            // Compare the extracted year with selectedYear
+            return year === selectedYear;
+          });
+  
+          // Sort the filtered data by timestamp
+          const sortedData = _.sortBy(
+            filteredData,
+            (item) => item.timeStamp.seconds
+          ).reverse();
+  
+          setPregnancyList(sortedData);
+        } else {
+          // No selectedYear, so set the entire data unfiltered
+          const sortedData = _.sortBy(
+            data,
+            (item) => item.timeStamp.seconds
+          ).reverse();
+  
+          setPregnancyList(sortedData);
+        }
       } catch (err) {
         console.error(err);
       }
     };
+  
     fetchData();
-  }, []);
+  }, [selectedYear]);
+  
+  
 
   const sortedDocData = _.sortBy(
     pregnancyList,
@@ -258,6 +293,7 @@ export default function PatientRecordPage() {
               filterName={filterName}
               onFilterName={handleFilterByName}
             />
+            
 
             <Scrollbar>
               <TableContainer sx={{ minWidth: 800 }}>

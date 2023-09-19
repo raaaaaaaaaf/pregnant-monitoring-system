@@ -4,6 +4,8 @@ import { styled, alpha } from '@mui/material/styles';
 import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
 // component
 import Iconify from '../../../components/iconify';
+import { useState } from 'react';
+import SelectYearModal from '../../../components/modal/SelectYearModal';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +41,17 @@ UserListToolbar.propTypes = {
 };
 
 export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+  const [open, setOpen] = useState(false)
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason !== 'backdropClick') {
+      setOpen(false);
+    }
+  };
   return (
     <StyledRoot
       sx={{
@@ -65,19 +78,12 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
         />
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
-      ) : (
         <Tooltip title="Filter list">
-          <IconButton>
+          <IconButton onClick={handleClickOpen}>
             <Iconify icon="ic:round-filter-list" />
           </IconButton>
+          <SelectYearModal open={open} onClose={handleClose}/>
         </Tooltip>
-      )}
     </StyledRoot>
   );
 }

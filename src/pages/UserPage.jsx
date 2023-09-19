@@ -44,7 +44,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Loading from '../components/loading/Loading';
 import _ from 'lodash';
-import { EditFormContext } from '../context/EditContext';
+
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -99,10 +99,6 @@ export default function UserPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [userList, setUserList] = useState([]);
-
-  const {userData} = useContext(AuthContext)
-
-  const {setFormId} = useContext(EditFormContext)
 
   const [loading, setLoading] = useState(true);
 
