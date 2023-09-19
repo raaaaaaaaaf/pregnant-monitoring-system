@@ -22,17 +22,17 @@ const SelectYearModal = ({ open, onClose }) => {
   return (
     <div>
       <Dialog disableEscapeKeyDown open={open} onClose={onClose}>
-        <DialogTitle>Select Year</DialogTitle>
+        <DialogTitle>Filtered by Year</DialogTitle>
         <DialogContent>
-         
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Select Year</InputLabel>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="select-label">Select Year</InputLabel>
               <Select
-                margin="dense"
-                labelId="demo-simple-select-label"
+                
+                labelId="select-label"
                 id="demo-simple-select"
                 value={selectedYear}
-                label="Age"
+                label="Select Year"
                 onChange={(e) => handleYearSelect(e.target.value)}
                 onClose={onClose}
               >
@@ -41,7 +41,7 @@ const SelectYearModal = ({ open, onClose }) => {
                 <MenuItem value={2021}>2021</MenuItem>
               </Select>
             </FormControl>
-          
+          </Box>
         </DialogContent>
       </Dialog>
     </div>

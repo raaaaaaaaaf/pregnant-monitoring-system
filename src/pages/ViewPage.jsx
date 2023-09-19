@@ -75,13 +75,13 @@ const styles = StyleSheet.create({
   },
   nametext: {
     fontSize: 12,
-    marginTop: 35,
+    marginTop: 30,
     marginLeft: 100,
     textDecoration: "underline",
   },
   nursetext: {
     fontSize: 10,
-    marginLeft: 110,
+    marginLeft: 122,
     marginBottom: 10,
   },
   text: {

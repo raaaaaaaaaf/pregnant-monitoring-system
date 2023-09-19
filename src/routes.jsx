@@ -14,6 +14,7 @@ import GoalsPage from './pages/GoalsPage';
 import Loading from './components/loading/Loading';
 import PatientRecordPage from './pages/PatientRecordPage';
 import UserDashboardAppPage from './pages/userPages/UserDashboardAppPage';
+import ViewPage from './pages/ViewPage';
 
 // ----------------------------------------------------------------------
 
@@ -67,6 +68,7 @@ export default function Router() {
         { path: 'user', element:  <ProtectedRoute role={"Admin"}><UserPage /></ProtectedRoute> },
         { path: 'goals', element: <ProtectedRoute role={"Admin"}><GoalsPage /></ProtectedRoute> },
         { path: 'patients', element:  <ProtectedRoute role={"Admin"}><PatientRecordPage /></ProtectedRoute> },
+        { path: 'patients/view/:id', element:  <ProtectedRoute role={"Admin"}><ViewPage /></ProtectedRoute> },
       ],
     },
     {
@@ -79,6 +81,7 @@ export default function Router() {
         { path: 'user', element:  <ProtectedRoute role={"Officer"}><UserPage /></ProtectedRoute> },
         { path: 'goals', element: <ProtectedRoute role={"Officer"}><GoalsPage /></ProtectedRoute> },
         { path: 'patients', element:  <ProtectedRoute role={"Officer"}><PatientRecordPage /></ProtectedRoute> },
+        { path: 'patients/view/:id', element:  <ProtectedRoute role={"Officer"}><ViewPage /></ProtectedRoute> },
       ],
     },
     {
