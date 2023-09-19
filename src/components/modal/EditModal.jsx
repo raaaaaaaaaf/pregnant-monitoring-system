@@ -18,11 +18,12 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import Swal from "sweetalert2";
+import { useParams } from "react-router-dom";
 
-function AddModal({ open, onClose }) {
+function EditModal({ open, onClose, id }) {
   const [date1, setData1] = useState(null);
   const [date2, setData2] = useState(null);
   const [date3, setData3] = useState(null);
@@ -93,9 +94,10 @@ function AddModal({ open, onClose }) {
     }));
   };
 
-  const handleAdd = async () => {
+
+  const handleEdit = async (id) => {
     try {
-      const pregRef = collection(db, "pregnancy");
+      const pregRef = doc(db, "pregnancy", id);
       const data = {
         address: formData.address,
         age: formData.age,
@@ -137,8 +139,8 @@ function AddModal({ open, onClose }) {
         checkbox9: isChecked.checkbox9,
         checkbox10: isChecked.checkbox10,
       };
-      await addDoc(pregRef, data);
-      Swal.fire("Added!", "Information has been added.", "success");
+      await updateDoc(pregRef, data);
+      Swal.fire("Edited!", "Information has been edited.", "success");
       onClose();
     } catch (err) {
       console.error(err);
@@ -147,7 +149,7 @@ function AddModal({ open, onClose }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Pregnant Information</DialogTitle>
+      <DialogTitle>Edit Pregnant Information</DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           {/* Left Column */}
@@ -566,7 +568,7 @@ function AddModal({ open, onClose }) {
         <Button onClick={onClose} color="primary">
           Close
         </Button>
-        <Button onClick={handleAdd} color="primary" variant="contained">
+        <Button onClick={() => handleEdit(id)} color="primary" variant="contained">
           Submit
         </Button>
       </DialogActions>
@@ -574,4 +576,4 @@ function AddModal({ open, onClose }) {
   );
 }
 
-export default AddModal;
+export default EditModal;

@@ -51,8 +51,8 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Loading from "../components/loading/Loading";
 import _ from "lodash";
-import { EditFormContext } from "../context/EditContext";
 import AddModal from "../components/modal/AddModal";
+import EditModal from "../components/modal/EditModal";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -62,6 +62,15 @@ const TABLE_HEAD = [
   { id: "cp", label: "Contact No.", alignRight: false },
   { id: "act", label: "Action", alignRight: false },
 ];
+
+const SORT_OPTIONS = [
+  { value: '2023', label: '2023' },
+  { value: '2022', label: '2022' },
+  { value: '2021', label: '2021' },
+  { value: '2020', label: '2020' },
+  { value: '2019', label: '2019' },
+];
+
 
 // ----------------------------------------------------------------------
 
@@ -112,13 +121,13 @@ export default function PatientRecordPage() {
 
   const [pregnancyList, setPregnancyList] = useState([]);
 
-  const { userData } = useContext(AuthContext);
-
-  const { setFormId } = useContext(EditFormContext);
+  const [formID, setFormID] = useState("")
 
   const [loading, setLoading] = useState(true);
 
   const [isModalOpen, setModalOpen] = useState(false)
+
+  const [isEditModalOpen, setEditModalOpen] = useState(false)
 
   useEffect(() => {
     setTimeout(() => {
@@ -309,32 +318,27 @@ export default function PatientRecordPage() {
                             <TableCell align="left">{contact}</TableCell>
 
                             <TableCell align="left">
-                              <Link
-                                to={`edit/${id}`}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "black",
-                                }}
-                              >
                                 <IconButton
                                   size="large"
                                   color="inherit"
-                                  onClick={() => setFormId(id)}
+                                  onClick={() => {setEditModalOpen(true), setFormID(id)}}
                                 >
                                   <Iconify
                                     icon={"material-symbols:edit-outline"}
                                   />
+                                  
                                 </IconButton>
-                              </Link>
+                                <EditModal open={isEditModalOpen} onClose={() => setEditModalOpen(false)} id={formID}/>
                               <IconButton
                                 size="large"
                                 color="inherit"
-                                onClick={() => deletePregnancy(id)}
+                              onClick={() => deletePregnancy(id)}
                               >
                                 <Iconify
                                   icon={"material-symbols:delete-outline"}
                                 />
                               </IconButton>
+                              
                               <Link
                                 to={`view/${id}`}
                                 style={{
@@ -397,6 +401,7 @@ export default function PatientRecordPage() {
             />
           </Card>
         )}
+        
       </Container>
     </>
   );

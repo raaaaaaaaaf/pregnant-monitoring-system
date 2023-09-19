@@ -13,11 +13,6 @@ const userConfig = [
     icon: <Iconify icon={'material-symbols:home-outline'}/>,
   },
   {
-    title: 'Add Pregnant',
-    path: '/officer/add',
-    icon: <Iconify icon={'healthicons:pregnant'}/>,
-  },
-  {
     title: 'Pregnant Records',
     path: '/officer/patients',
     icon: <Iconify icon={'vaadin:records'}/>,

@@ -15,11 +15,20 @@ AppWebsiteVisits.propTypes = {
 };
 
 export default function AppWebsiteVisits({ title, subheader, chartLabels, chartData, ...other }) {
+  // Create an array of month names from chartLabels
+  const monthLabels = chartLabels.map((date) => {
+    const dateParts = date.split('-');
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1; // Month is 0-based index
+    const monthName = new Date(year, month, 1).toLocaleString('default', { month: 'long' });
+    return `${monthName} ${year}`;
+  });
+
   const chartOptions = useChart({
     plotOptions: { bar: { columnWidth: '16%' } },
     fill: { type: chartData.map((i) => i.fill) },
-    labels: chartLabels,
-    xaxis: { type: 'datetime' },
+    labels: monthLabels, // Use monthLabels instead of chartLabels
+    xaxis: { type: 'category' }, // Change x-axis type to category since we are using labels
     tooltip: {
       shared: true,
       intersect: false,

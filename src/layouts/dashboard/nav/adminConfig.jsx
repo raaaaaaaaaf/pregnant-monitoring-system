@@ -18,11 +18,6 @@ const adminConfig = [
     icon: <Iconify icon={'mdi:users-outline'}/>,
   },
   {
-    title: 'Add Pregnant',
-    path: '/dashboard/add',
-    icon: <Iconify icon={'healthicons:pregnant'}/>,
-  },
-  {
     title: 'Pregnant Records',
     path: '/dashboard/patients',
     icon: <Iconify icon={'vaadin:records'}/>,
