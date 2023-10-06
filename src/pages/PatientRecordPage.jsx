@@ -132,6 +132,10 @@ export default function PatientRecordPage() {
 
   const { selectedYear, setSelectedYear } = useContext(SelectYearContext);
 
+  const { userData } = useContext(AuthContext)
+
+  const nav = useNavigate();
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -199,6 +203,11 @@ export default function PatientRecordPage() {
     const pregnancyDoc = doc(db, "pregnancy", id);
     Swal.fire("Deleted!", "Information has been deleted.", "success");
     await deleteDoc(pregnancyDoc);
+    if (userData.role === "Admin") {
+      nav('/dashboard/pregnancy')
+    } else {
+      nav('/officer/pregnancy')
+    }
   };
 
   const handleRequestSort = (event, property) => {

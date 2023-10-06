@@ -21,9 +21,13 @@ import Checkbox from "@mui/material/Checkbox";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import Swal from "sweetalert2";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 function EditModal({ open, onClose, id }) {
+  const {userData} = useContext(AuthContext)
+  const nav = useNavigate()
   const [date1, setData1] = useState(null);
   const [date2, setData2] = useState(null);
   const [date3, setData3] = useState(null);
@@ -142,6 +146,11 @@ function EditModal({ open, onClose, id }) {
       await updateDoc(pregRef, data);
       Swal.fire("Edited!", "Information has been edited.", "success");
       onClose();
+      if (userData.role === "Admin") {
+        nav('/dashboard/pregnancy')
+      } else {
+        nav('/officer/pregnancy')
+      }
     } catch (err) {
       console.error(err);
     }

@@ -15,6 +15,8 @@ import {
 } from "@react-pdf/renderer";
 import logo from "../assets/logo1.png";
 import logo1 from "../assets/doh.png";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 Font.register({
   family: "Oswald",
@@ -124,7 +126,8 @@ const styles = StyleSheet.create({
 const ViewPage = () => {
   const [pregnancy, setPregnancy] = useState({});
   const { id } = useParams();
-  const navigate = useNavigate();
+  const nav = useNavigate();
+  const {userData} = useContext(AuthContext)
 
   useEffect(() => {
     const pregnancyDocRef = doc(db, "pregnancy", id);
@@ -414,7 +417,11 @@ const ViewPage = () => {
     // Only generate PDF when pregnancy data is available
     if (pregnancy.id) {
       generatePDF();
-      navigate("/dashboard/pregnancy");
+      if (userData.role === "Admin") {
+        nav('/dashboard/pregnancy')
+      } else {
+        nav('/officer/pregnancy')
+      }
     }
   }, [pregnancy]);
 

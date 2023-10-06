@@ -21,8 +21,13 @@ import Checkbox from "@mui/material/Checkbox";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 function AddModal({ open, onClose }) {
+  const nav = useNavigate();
+  const {userData} = useContext(AuthContext)
   const [date1, setData1] = useState(null);
   const [date2, setData2] = useState(null);
   const [date3, setData3] = useState(null);
@@ -140,6 +145,11 @@ function AddModal({ open, onClose }) {
       await addDoc(pregRef, data);
       Swal.fire("Added!", "Information has been added.", "success");
       onClose();
+      if (userData.role === "Admin") {
+        nav('/dashboard/pregnancy')
+      } else {
+        nav('/officer/pregnancy')
+      }
     } catch (err) {
       console.error(err);
     }
