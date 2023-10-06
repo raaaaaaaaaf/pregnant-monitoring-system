@@ -9,7 +9,7 @@ import RegisterPage from './pages/RegisterPage'
 import Page404 from './pages/Page404';
 import DashboardAppPage from './pages/DashboardAppPage';
 import { AuthContext } from './context/AuthContext';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import GoalsPage from './pages/GoalsPage';
 import Loading from './components/loading/Loading';
 import PatientRecordPage from './pages/PatientRecordPage';
@@ -25,8 +25,26 @@ export default function Router() {
   const ProtectedRoute = ({ children, role }) => {
     const { currentUser, loading, userData } = useContext(AuthContext);
 
+    const [timedOut, setTimedOut] = useState(false);
+  
+    useEffect(() => {
+      // Set a timeout to consider the loading taking too long
+      const timeoutId = setTimeout(() => {
+        setTimedOut(true);
+      }, 2000); // 5 seconds timeout (adjust as needed)
+  
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }, []);
+  
     if (loading) {
-      return <Loading/>
+      if (timedOut) {
+        // Redirect to login page if loading takes too long
+        return <Navigate to="/login" replace />;
+      } else {
+        return <Loading/>;
+      }
     }
   
     if (!currentUser) {
@@ -67,8 +85,8 @@ export default function Router() {
         { path: 'app', element: <ProtectedRoute role={"Admin"}><DashboardAppPage /></ProtectedRoute> },
         { path: 'user', element:  <ProtectedRoute role={"Admin"}><UserPage /></ProtectedRoute> },
         { path: 'goals', element: <ProtectedRoute role={"Admin"}><GoalsPage /></ProtectedRoute> },
-        { path: 'patients', element:  <ProtectedRoute role={"Admin"}><PatientRecordPage /></ProtectedRoute> },
-        { path: 'patients/view/:id', element:  <ProtectedRoute role={"Admin"}><ViewPage /></ProtectedRoute> },
+        { path: 'pregnancy', element:  <ProtectedRoute role={"Admin"}><PatientRecordPage /></ProtectedRoute> },
+        { path: 'pregnancy/view/:id', element:  <ProtectedRoute role={"Admin"}><ViewPage /></ProtectedRoute> },
       ],
     },
     {
@@ -80,8 +98,8 @@ export default function Router() {
         { path: 'app', element: <ProtectedRoute role={"Officer"}><UserDashboardAppPage /></ProtectedRoute> },
         { path: 'user', element:  <ProtectedRoute role={"Officer"}><UserPage /></ProtectedRoute> },
         { path: 'goals', element: <ProtectedRoute role={"Officer"}><GoalsPage /></ProtectedRoute> },
-        { path: 'patients', element:  <ProtectedRoute role={"Officer"}><PatientRecordPage /></ProtectedRoute> },
-        { path: 'patients/view/:id', element:  <ProtectedRoute role={"Officer"}><ViewPage /></ProtectedRoute> },
+        { path: 'pregnancy', element:  <ProtectedRoute role={"Officer"}><PatientRecordPage /></ProtectedRoute> },
+        { path: 'pregnancy/view/:id', element:  <ProtectedRoute role={"Officer"}><ViewPage /></ProtectedRoute> },
       ],
     },
     {

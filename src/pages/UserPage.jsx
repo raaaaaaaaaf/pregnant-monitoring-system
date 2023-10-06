@@ -224,7 +224,7 @@ export default function UserPage() {
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
                       <Stack direction="row" alignItems="center" spacing={2}>
-                      <Avatar alt={displayName} src={avt} />
+                      <Avatar alt={displayName} src={`/assets/images/avatars/avatar_${index + 1}.jpg`} />
                         <Typography variant="subtitle2" noWrap>
                           {displayName}
                         </Typography>

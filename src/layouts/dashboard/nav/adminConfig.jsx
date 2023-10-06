@@ -19,7 +19,7 @@ const adminConfig = [
   },
   {
     title: 'Pregnant Records',
-    path: '/dashboard/patients',
+    path: '/dashboard/pregnancy',
     icon: <Iconify icon={'vaadin:records'}/>,
   },
   {

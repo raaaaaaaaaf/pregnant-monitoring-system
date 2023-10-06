@@ -414,7 +414,7 @@ const ViewPage = () => {
     // Only generate PDF when pregnancy data is available
     if (pregnancy.id) {
       generatePDF();
-      navigate("/dashboard/patients");
+      navigate("/dashboard/pregnancy");
     }
   }, [pregnancy]);
 

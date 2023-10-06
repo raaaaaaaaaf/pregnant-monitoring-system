@@ -14,7 +14,7 @@ const userConfig = [
   },
   {
     title: 'Pregnant Records',
-    path: '/officer/patients',
+    path: '/officer/pregnancy',
     icon: <Iconify icon={'vaadin:records'}/>,
   },
   {
