@@ -130,6 +130,8 @@ export default function PatientRecordPage() {
 
   const [isEditModalOpen, setEditModalOpen] = useState(false)
 
+  const [editData, setEditData] = useState({});
+
   const { selectedYear, setSelectedYear } = useContext(SelectYearContext);
 
   const { userData } = useContext(AuthContext)
@@ -362,14 +364,14 @@ export default function PatientRecordPage() {
                                 <IconButton
                                   size="large"
                                   color="inherit"
-                                  onClick={() => {setEditModalOpen(true), setFormID(id)}}
+                                  onClick={() => {setEditModalOpen(true), setFormID(id), setEditData(pregnancy)}}
                                 >
                                   <Iconify
                                     icon={"material-symbols:edit-outline"}
                                   />
                                   
                                 </IconButton>
-                                <EditModal open={isEditModalOpen} onClose={() => setEditModalOpen(false)} id={formID}/>
+                                <EditModal open={isEditModalOpen} onClose={() => setEditModalOpen(false)} id={formID} data={editData}/>
                               <IconButton
                                 size="large"
                                 color="inherit"

@@ -25,7 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-function EditModal({ open, onClose, id }) {
+function EditModal({ open, onClose, id, data }) {
   const {userData} = useContext(AuthContext)
   const nav = useNavigate()
   const [date1, setData1] = useState(null);
@@ -43,33 +43,35 @@ function EditModal({ open, onClose, id }) {
     checkbox9: false,
     checkbox10: false,
   });
+  console.log(data)
   const [formData, setFormData] = useState({
     // Step1
-    fullName: "",
-    age: "",
-    philhealth: "",
-    address: "",
-    husband: "",
-    cp: "",
+    fullName: data.name || "",
+    age: data.age || "",
+    philhealth: data.philhealth || "",
+    address: data.address || "",
+    husband: data.husband || "",
+    cp: data.contact || "",
     // Step 2
-    temp: "",
-    aog: "",
-    pr: "",
-    fh: "",
-    fht: "",
-    bp: "",
-    pres: "",
-    rr: "",
-    pros: "",
-    weight: "",
-    height: "",
-    bmi: "",
+    temp: data.temp || "",
+    aog: data.aog || "",
+    pr: data.pr || "",
+    fh: data.fh || "",
+    fht: data.fht || "",
+    bp: data.bp || "",
+    pres: data.pres || "",
+    rr: data.rr || "",
+    pros: data.pros || "",
+    weight: data.weight || "",
+    height: data.height || "",
+    bmi: data.bmi || "",
 
     // Step 3
-    td: "",
-    lab: "",
-    chief: "",
+    td: data.td || "",
+    lab: data.lab || "",
+    chief: data.chief || "",
   });
+  
 
   // Define the handleInputChange function to update formData
   const handleInputChange = (e) => {
