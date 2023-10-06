@@ -31,7 +31,7 @@ export default function Router() {
       // Set a timeout to consider the loading taking too long
       const timeoutId = setTimeout(() => {
         setTimedOut(true);
-      }, 2000); // 5 seconds timeout (adjust as needed)
+      }, 4000); // 5 seconds timeout (adjust as needed)
   
       return () => {
         clearTimeout(timeoutId);

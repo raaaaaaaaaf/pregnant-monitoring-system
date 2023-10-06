@@ -151,6 +151,11 @@ function AddModal({ open, onClose }) {
         nav('/officer/pregnancy')
       }
     } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Please Input All Fields!',
+        text: {err},
+      })
       console.error(err);
     }
   };

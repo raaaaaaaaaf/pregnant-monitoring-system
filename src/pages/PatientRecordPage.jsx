@@ -208,6 +208,12 @@ export default function PatientRecordPage() {
     
   };
 
+  const handleEditModal = (id, data) => {
+    setFormID(id)
+    setEditData(data)
+    setEditModalOpen(true)
+  }
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -364,14 +370,14 @@ export default function PatientRecordPage() {
                                 <IconButton
                                   size="large"
                                   color="inherit"
-                                  onClick={() => {setEditModalOpen(true), setFormID(id), setEditData(pregnancy)}}
+                                  onClick={() => handleEditModal(id, pregnancy)}
                                 >
                                   <Iconify
                                     icon={"material-symbols:edit-outline"}
                                   />
                                   
                                 </IconButton>
-                                <EditModal open={isEditModalOpen} onClose={() => setEditModalOpen(false)} id={formID} data={editData}/>
+                                
                               <IconButton
                                 size="large"
                                 color="inherit"
@@ -431,8 +437,9 @@ export default function PatientRecordPage() {
                   )}
                 </Table>
               </TableContainer>
+              <EditModal open={isEditModalOpen} onClose={() => setEditModalOpen(false)} id={formID} data={editData}/>
             </Scrollbar>
-
+                    
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"

@@ -18,16 +18,23 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useEffect } from "react";
 
 function EditModal({ open, onClose, id, data }) {
-  const {userData} = useContext(AuthContext)
-  const nav = useNavigate()
+  const { userData } = useContext(AuthContext);
+  const nav = useNavigate();
   const [date1, setData1] = useState(null);
   const [date2, setData2] = useState(null);
   const [date3, setData3] = useState(null);
@@ -43,7 +50,6 @@ function EditModal({ open, onClose, id, data }) {
     checkbox9: false,
     checkbox10: false,
   });
-  console.log(data)
   const [formData, setFormData] = useState({
     // Step1
     fullName: data.name || "",
@@ -71,7 +77,36 @@ function EditModal({ open, onClose, id, data }) {
     lab: data.lab || "",
     chief: data.chief || "",
   });
-  
+  useEffect(() => {
+    // Update the formData state whenever the data prop changes
+    setFormData({
+      // Step1
+      fullName: data.name || "",
+      age: data.age || "",
+      philhealth: data.philhealth || "",
+      address: data.address || "",
+      husband: data.husband || "",
+      cp: data.contact || "",
+      // Step 2
+      temp: data.temp || "",
+      aog: data.aog || "",
+      pr: data.pr || "",
+      fh: data.fh || "",
+      fht: data.fht || "",
+      bp: data.bp || "",
+      pres: data.pres || "",
+      rr: data.rr || "",
+      pros: data.pros || "",
+      weight: data.weight || "",
+      height: data.height || "",
+      bmi: data.bmi || "",
+
+      // Step 3
+      td: data.td || "",
+      lab: data.lab || "",
+      chief: data.chief || "",
+    });
+  }, [data]);
 
   // Define the handleInputChange function to update formData
   const handleInputChange = (e) => {
@@ -99,7 +134,6 @@ function EditModal({ open, onClose, id, data }) {
       [name]: checked,
     }));
   };
-
 
   const handleEdit = async (id) => {
     try {
@@ -149,11 +183,12 @@ function EditModal({ open, onClose, id, data }) {
       Swal.fire("Edited!", "Information has been edited.", "success");
       onClose();
       if (userData.role === "Admin") {
-        nav('/dashboard/pregnancy')
+        nav("/dashboard/pregnancy");
       } else {
-        nav('/officer/pregnancy')
+        nav("/officer/pregnancy");
       }
     } catch (err) {
+
       console.error(err);
     }
   };
@@ -579,7 +614,11 @@ function EditModal({ open, onClose, id, data }) {
         <Button onClick={onClose} color="primary">
           Close
         </Button>
-        <Button onClick={() => handleEdit(id)} color="primary" variant="contained">
+        <Button
+          onClick={() => handleEdit(id)}
+          color="primary"
+          variant="contained"
+        >
           Submit
         </Button>
       </DialogActions>
