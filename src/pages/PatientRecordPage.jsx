@@ -194,11 +194,6 @@ export default function PatientRecordPage() {
   
   
 
-  const sortedDocData = _.sortBy(
-    pregnancyList,
-    (data) => data.timeStamp.seconds
-  ).reverse();
-
   const deletePregnancy = async (id) => {
     const pregnancyDoc = doc(db, "pregnancy", id);
     Swal.fire("Deleted!", "Information has been deleted.", "success");
@@ -208,6 +203,7 @@ export default function PatientRecordPage() {
     } else {
       nav('/officer/pregnancy')
     }
+    
   };
 
   const handleRequestSort = (event, property) => {
@@ -317,7 +313,7 @@ export default function PatientRecordPage() {
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {sortedDocData
+                    {filteredUsers
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
