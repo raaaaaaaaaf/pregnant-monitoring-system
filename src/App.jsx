@@ -8,12 +8,15 @@ import ThemeProvider from './theme';
 import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
 import { AuthContext } from './context/AuthContext'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // ----------------------------------------------------------------------
 
 export default function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} />
         <ThemeProvider>
           <ScrollToTop />
           <StyledChart />

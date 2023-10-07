@@ -54,6 +54,7 @@ import _ from "lodash";
 import AddModal from "../components/modal/AddModal";
 import EditModal from "../components/modal/EditModal";
 import { SelectYearContext } from "../context/SelectYearContext";
+import { toast } from "react-toastify";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -198,7 +199,11 @@ export default function PatientRecordPage() {
 
   const deletePregnancy = async (id) => {
     const pregnancyDoc = doc(db, "pregnancy", id);
-    Swal.fire("Deleted!", "Information has been deleted.", "success");
+    toast.success("Pregnancy record deleted.", {
+      position: "top-right",
+      autoClose: 3000, // Automatically close the toast after 3 seconds
+      hideProgressBar: false,
+    });
     await deleteDoc(pregnancyDoc);
     if (userData.role === "Admin") {
       nav('/dashboard/pregnancy')

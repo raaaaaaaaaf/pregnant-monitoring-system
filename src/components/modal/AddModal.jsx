@@ -24,10 +24,12 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-toastify";
+
 
 function AddModal({ open, onClose }) {
   const nav = useNavigate();
-  const {userData} = useContext(AuthContext)
+  const { userData } = useContext(AuthContext);
   const [date1, setData1] = useState(null);
   const [date2, setData2] = useState(null);
   const [date3, setData3] = useState(null);
@@ -70,10 +72,46 @@ function AddModal({ open, onClose }) {
     lab: "",
     chief: "",
   });
+  const [formErrors, setFormErrors] = useState({
+    // Step1
+    fullName: false,
+    age: false,
+    philhealth: false,
+    address: false,
+    husband: false,
+    cp: false,
+    // Step 2
+    temp: false,
+    aog: false,
+    pr: false,
+    fh: false,
+    fht: false,
+    bp: false,
+    pres: false,
+    rr: false,
+    pros: false,
+    weight: false,
+    height: false,
+    bmi: false,
+
+    // Step 3
+    td: false,
+    lab: false,
+    chief: false,
+  });
 
   // Define the handleInputChange function to update formData
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Check if the value is empty and set an error flag accordingly
+    const isEmpty = value.trim() === "";
+
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: isEmpty,
+    }));
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -100,6 +138,14 @@ function AddModal({ open, onClose }) {
 
   const handleAdd = async () => {
     try {
+      const hasErrors = Object.values(formErrors).some((error) => error);
+
+      if (hasErrors) {
+        throw new Error("Please fill in all required fields.");
+      }
+      if (!date1 || !date2 || !date3) {
+        throw new Error("Date fields are required.");
+      }
       const pregRef = collection(db, "pregnancy");
       const data = {
         address: formData.address,
@@ -143,19 +189,26 @@ function AddModal({ open, onClose }) {
         checkbox10: isChecked.checkbox10,
       };
       await addDoc(pregRef, data);
-      Swal.fire("Added!", "Information has been added.", "success");
+      // Display a success toast notification
+      toast.success("Information has been added.", {
+        position: "top-right",
+        autoClose: 3000, // Close the toast after 3 seconds
+        hideProgressBar: false,
+      });
       onClose();
       if (userData.role === "Admin") {
-        nav('/dashboard/pregnancy')
+        nav("/dashboard/pregnancy");
       } else {
-        nav('/officer/pregnancy')
+        nav("/officer/pregnancy");
       }
     } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Please Input All Fields!',
-        text: {err},
-      })
+      // Display an error toast notification
+      toast.error(err.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+      });
+
       console.error(err);
     }
   };
@@ -177,6 +230,10 @@ function AddModal({ open, onClose }) {
               onChange={handleInputChange}
               variant="outlined"
               fullWidth
+              error={formErrors.fullName}
+              helperText={
+                formErrors.fullName ? "This Field cannot be empty" : ""
+              }
             />
             <TextField
               margin="dense"
@@ -189,6 +246,8 @@ function AddModal({ open, onClose }) {
               type="number"
               fullWidth
               variant="outlined"
+              error={formErrors.age}
+              helperText={formErrors.age ? "This Field cannot be empty" : ""}
             />
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -214,6 +273,10 @@ function AddModal({ open, onClose }) {
               placeholder="XX-XXXXXXXXX-X"
               fullWidth
               variant="outlined"
+              error={formErrors.philhealth}
+              helperText={
+                formErrors.philhealth ? "This Field cannot be empty" : ""
+              }
             />
             <TextField
               margin="dense"
@@ -226,6 +289,8 @@ function AddModal({ open, onClose }) {
               type="number"
               fullWidth
               variant="outlined"
+              error={formErrors.cp}
+              helperText={formErrors.cp ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -237,6 +302,10 @@ function AddModal({ open, onClose }) {
               label="Husband/Relatives"
               fullWidth
               variant="outlined"
+              error={formErrors.husband}
+              helperText={
+                formErrors.husband ? "This Field cannot be empty" : ""
+              }
             />
           </Grid>
           {/* Right Column */}
@@ -269,6 +338,10 @@ function AddModal({ open, onClose }) {
               label="Address"
               fullWidth
               variant="outlined"
+              error={formErrors.address}
+              helperText={
+                formErrors.address ? "This Field cannot be empty" : ""
+              }
             />
           </Grid>
         </Grid>
@@ -288,6 +361,8 @@ function AddModal({ open, onClose }) {
               placeholder="°C"
               variant="outlined"
               fullWidth
+              error={formErrors.temp}
+              helperText={formErrors.temp ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -301,6 +376,8 @@ function AddModal({ open, onClose }) {
               placeholder="bpm"
               variant="outlined"
               fullWidth
+              error={formErrors.pr}
+              helperText={formErrors.pr ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -314,6 +391,8 @@ function AddModal({ open, onClose }) {
               placeholder="mmHg"
               variant="outlined"
               fullWidth
+              error={formErrors.bp}
+              helperText={formErrors.bp ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -327,6 +406,8 @@ function AddModal({ open, onClose }) {
               placeholder="cpm"
               variant="outlined"
               fullWidth
+              error={formErrors.rr}
+              helperText={formErrors.rr ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -338,6 +419,8 @@ function AddModal({ open, onClose }) {
               label="Td"
               variant="outlined"
               fullWidth
+              error={formErrors.td}
+              helperText={formErrors.td ? "This Field cannot be empty" : ""}
             />
           </Grid>
           {/* Center Column */}
@@ -354,6 +437,8 @@ function AddModal({ open, onClose }) {
               placeholder="cm"
               variant="outlined"
               fullWidth
+              error={formErrors.height}
+              helperText={formErrors.height ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -367,6 +452,8 @@ function AddModal({ open, onClose }) {
               placeholder="kg"
               variant="outlined"
               fullWidth
+              error={formErrors.weight}
+              helperText={formErrors.weight ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -380,6 +467,8 @@ function AddModal({ open, onClose }) {
               placeholder="BMI"
               variant="outlined"
               fullWidth
+              error={formErrors.bmi}
+              helperText={formErrors.bmi ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -393,6 +482,8 @@ function AddModal({ open, onClose }) {
               placeholder="weeks"
               variant="outlined"
               fullWidth
+              error={formErrors.aog}
+              helperText={formErrors.aog ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -404,6 +495,8 @@ function AddModal({ open, onClose }) {
               label="Laboratory"
               variant="outlined"
               fullWidth
+              error={formErrors.lab}
+              helperText={formErrors.lab ? "This Field cannot be empty" : ""}
             />
           </Grid>
           {/* Right Column */}
@@ -420,6 +513,8 @@ function AddModal({ open, onClose }) {
               placeholder="cm"
               variant="outlined"
               fullWidth
+              error={formErrors.fh}
+              helperText={formErrors.fh ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -433,6 +528,8 @@ function AddModal({ open, onClose }) {
               placeholder="bpm"
               variant="outlined"
               fullWidth
+              error={formErrors.fht}
+              helperText={formErrors.fht ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -444,6 +541,8 @@ function AddModal({ open, onClose }) {
               label="P.R.E.Syndrome"
               variant="outlined"
               fullWidth
+              error={formErrors.pres}
+              helperText={formErrors.pres ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -455,6 +554,8 @@ function AddModal({ open, onClose }) {
               label="P.O.Syndrome"
               variant="outlined"
               fullWidth
+              error={formErrors.pros}
+              helperText={formErrors.pros ? "This Field cannot be empty" : ""}
             />
             <TextField
               margin="dense"
@@ -466,6 +567,8 @@ function AddModal({ open, onClose }) {
               label="Chief Complaints"
               variant="outlined"
               fullWidth
+              error={formErrors.chief}
+              helperText={formErrors.chief ? "This Field cannot be empty" : ""}
             />
           </Grid>
         </Grid>
