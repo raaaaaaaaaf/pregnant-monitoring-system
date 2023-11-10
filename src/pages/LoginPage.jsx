@@ -68,6 +68,7 @@ export default function LoginPage() {
         showConfirmButton: false,
         timer: 1500
       })
+      navigate('/Dashboard/app')
     } catch (err) {
       Swal.fire({
         icon: 'error',
@@ -77,7 +78,7 @@ export default function LoginPage() {
       })
       console.error(err);
     }
-    navigate('/Dashboard/app')
+    
   }
 
   return (

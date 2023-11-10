@@ -93,9 +93,9 @@ export default function UserDashboardAppPage() {
               title="Pregnants"
               subheader= {`${diff}% more than last month`}
               chartLabels={[
-                '2023-07-01',
-                '2023-08-01',
                 '2023-09-01',
+                '2023-10-01',
+                '2023-11-01',
               ]}
               chartData={[
                 {
