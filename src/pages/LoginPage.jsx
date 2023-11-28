@@ -99,7 +99,7 @@ export default function LoginPage() {
         {mdUp && (
           <StyledSection>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Municipality of Malimono Clinic
+            Municipality of Malimono Health Center (Prenatal Care)
             </Typography>
             <img src="/assets/illustrations/bg.svg" alt="login" />
           </StyledSection>
