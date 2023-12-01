@@ -94,12 +94,12 @@ export default function Router() {
       element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
       children: [
         // Remove the index: true from this route
-        { element: <ProtectedRoute role={"Officer"}><Navigate to="/officer/app" /></ProtectedRoute>, index: true },
-        { path: 'app', element: <ProtectedRoute role={"Officer"}><UserDashboardAppPage /></ProtectedRoute> },
-        { path: 'user', element:  <ProtectedRoute role={"Officer"}><UserPage /></ProtectedRoute> },
-        { path: 'goals', element: <ProtectedRoute role={"Officer"}><GoalsPage /></ProtectedRoute> },
-        { path: 'pregnancy', element:  <ProtectedRoute role={"Officer"}><PatientRecordPage /></ProtectedRoute> },
-        { path: 'pregnancy/view/:id', element:  <ProtectedRoute role={"Officer"}><ViewPage /></ProtectedRoute> },
+        { element: <ProtectedRoute ><Navigate to="/officer/app" /></ProtectedRoute>, index: true },
+        { path: 'app', element: <ProtectedRoute ><UserDashboardAppPage /></ProtectedRoute> },
+        { path: 'user', element:  <ProtectedRoute ><UserPage /></ProtectedRoute> },
+        { path: 'goals', element: <ProtectedRoute ><GoalsPage /></ProtectedRoute> },
+        { path: 'pregnancy', element:  <ProtectedRoute ><PatientRecordPage /></ProtectedRoute> },
+        { path: 'pregnancy/view/:id', element:  <ProtectedRoute ><ViewPage /></ProtectedRoute> },
       ],
     },
     {
