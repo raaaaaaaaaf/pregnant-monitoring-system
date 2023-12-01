@@ -416,7 +416,6 @@ function EditModal({ open, onClose, id, data }) {
               value={formData.bp}
               onChange={handleInputChange}
               label="Blood Pressure"
-              type="number"
               placeholder="mmHg"
               variant="outlined"
               fullWidth
