@@ -23,6 +23,11 @@ const adminConfig = [
     icon: <Iconify icon={'vaadin:records'}/>,
   },
   {
+    title: 'Doctor/Midwife',
+    path: '/dashboard/staff',
+    icon: <Iconify icon={'fluent:doctor-28-regular'}/>,
+  },
+  {
     title: 'Goals',
     path: '/dashboard/goals',
     icon: <Iconify icon={'octicon:goal-16'}/>,

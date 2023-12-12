@@ -15,6 +15,7 @@ import Loading from './components/loading/Loading';
 import PatientRecordPage from './pages/PatientRecordPage';
 import UserDashboardAppPage from './pages/userPages/UserDashboardAppPage';
 import ViewPage from './pages/ViewPage';
+import DoctorMidwifePage from './pages/DoctorMidwifePage';
 
 // ----------------------------------------------------------------------
 
@@ -85,6 +86,7 @@ export default function Router() {
         { path: 'app', element: <ProtectedRoute role={"Admin"}><DashboardAppPage /></ProtectedRoute> },
         { path: 'user', element:  <ProtectedRoute role={"Admin"}><UserPage /></ProtectedRoute> },
         { path: 'goals', element: <ProtectedRoute role={"Admin"}><GoalsPage /></ProtectedRoute> },
+        { path: 'staff', element:  <ProtectedRoute role={"Admin"}><DoctorMidwifePage /></ProtectedRoute> },
         { path: 'pregnancy', element:  <ProtectedRoute role={"Admin"}><PatientRecordPage /></ProtectedRoute> },
         { path: 'pregnancy/view/:id', element:  <ProtectedRoute role={"Admin"}><ViewPage /></ProtectedRoute> },
       ],
