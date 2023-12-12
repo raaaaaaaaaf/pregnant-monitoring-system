@@ -66,13 +66,12 @@ const TABLE_HEAD = [
 ];
 
 const SORT_OPTIONS = [
-  { value: '2023', label: '2023' },
-  { value: '2022', label: '2022' },
-  { value: '2021', label: '2021' },
-  { value: '2020', label: '2020' },
-  { value: '2019', label: '2019' },
+  { value: "2023", label: "2023" },
+  { value: "2022", label: "2022" },
+  { value: "2021", label: "2021" },
+  { value: "2020", label: "2020" },
+  { value: "2019", label: "2019" },
 ];
-
 
 // ----------------------------------------------------------------------
 
@@ -123,19 +122,19 @@ export default function PatientRecordPage() {
 
   const [pregnancyList, setPregnancyList] = useState([]);
 
-  const [formID, setFormID] = useState("")
+  const [formID, setFormID] = useState("");
 
   const [loading, setLoading] = useState(true);
 
-  const [isModalOpen, setModalOpen] = useState(false)
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const [isEditModalOpen, setEditModalOpen] = useState(false)
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   const [editData, setEditData] = useState({});
 
   const { selectedYear, setSelectedYear } = useContext(SelectYearContext);
 
-  const { userData } = useContext(AuthContext)
+  const { userData } = useContext(AuthContext);
 
   const nav = useNavigate();
 
@@ -157,26 +156,26 @@ export default function PatientRecordPage() {
             ...doc.data(),
           });
         });
-  
+
         // Apply filtering only when a year is selected
         if (selectedYear) {
           const filteredData = data.filter((item) => {
             // Convert Firestore timestamp to a JavaScript Date object
             const timestamp = item.timeStamp.toDate();
-            
+
             // Get the year from the Date object
             const year = timestamp.getFullYear();
-            
+
             // Compare the extracted year with selectedYear
             return year === selectedYear;
           });
-  
+
           // Sort the filtered data by timestamp
           const sortedData = _.sortBy(
             filteredData,
             (item) => item.timeStamp.seconds
           ).reverse();
-  
+
           setPregnancyList(sortedData);
         } else {
           // No selectedYear, so set the entire data unfiltered
@@ -184,18 +183,16 @@ export default function PatientRecordPage() {
             data,
             (item) => item.timeStamp.seconds
           ).reverse();
-  
+
           setPregnancyList(sortedData);
         }
       } catch (err) {
         console.error(err);
       }
     };
-  
+
     fetchData();
   }, [selectedYear]);
-  
-  
 
   const deletePregnancy = async (id) => {
     const pregnancyDoc = doc(db, "pregnancy", id);
@@ -206,18 +203,17 @@ export default function PatientRecordPage() {
     });
     await deleteDoc(pregnancyDoc);
     if (userData.role === "Admin") {
-      nav('/dashboard/pregnancy')
+      nav("/dashboard/pregnancy");
     } else {
-      nav('/officer/pregnancy')
+      nav("/officer/pregnancy");
     }
-    
   };
 
   const handleEditModal = (id, data) => {
-    setFormID(id)
-    setEditData(data)
-    setEditModalOpen(true)
-  }
+    setFormID(id);
+    setEditData(data);
+    setEditModalOpen(true);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -293,14 +289,17 @@ export default function PatientRecordPage() {
           <Typography variant="h4" gutterBottom>
             Pregnancy Records
           </Typography>
+
           <Button
             onClick={() => setModalOpen(true)}
             variant="contained"
             startIcon={<Iconify icon="eva:plus-fill" />}
+            style={{ display: userData.role === "Admin" ? "block" : "none" }}
           >
             New Pregnancy
           </Button>
-          <AddModal open={isModalOpen} onClose={()=> setModalOpen(false)}/>
+
+          <AddModal open={isModalOpen} onClose={() => setModalOpen(false)} />
         </Stack>
         {loading ? (
           <Loading />
@@ -311,7 +310,6 @@ export default function PatientRecordPage() {
               filterName={filterName}
               onFilterName={handleFilterByName}
             />
-            
 
             <Scrollbar>
               <TableContainer sx={{ minWidth: 800 }}>
@@ -367,32 +365,41 @@ export default function PatientRecordPage() {
 
                             <TableCell align="left">{age}</TableCell>
 
-                            <TableCell align="left">{new Date(dob.seconds * 1000).toLocaleDateString("en-US")}</TableCell>
+                            <TableCell align="left">
+                              {new Date(dob.seconds * 1000).toLocaleDateString(
+                                "en-US"
+                              )}
+                            </TableCell>
 
                             <TableCell align="left">{contact}</TableCell>
 
                             <TableCell align="left">
-                                <IconButton
-                                  size="large"
-                                  color="inherit"
-                                  onClick={() => handleEditModal(id, pregnancy)}
-                                >
-                                  <Iconify
-                                    icon={"material-symbols:edit-outline"}
-                                  />
-                                  
-                                </IconButton>
-                                
-                              <IconButton
-                                size="large"
-                                color="inherit"
-                              onClick={() => deletePregnancy(id)}
-                              >
-                                <Iconify
-                                  icon={"material-symbols:delete-outline"}
-                                />
-                              </IconButton>
-                              
+                              {userData.role === "Admin" && (
+                                <>
+                                  <IconButton
+                                    size="large"
+                                    color="inherit"
+                                    onClick={() =>
+                                      handleEditModal(id, pregnancy)
+                                    }
+                                  >
+                                    <Iconify
+                                      icon={"material-symbols:edit-outline"}
+                                    />
+                                  </IconButton>
+
+                                  <IconButton
+                                    size="large"
+                                    color="inherit"
+                                    onClick={() => deletePregnancy(id)}
+                                  >
+                                    <Iconify
+                                      icon={"material-symbols:delete-outline"}
+                                    />
+                                  </IconButton>
+                                </>
+                              )}
+
                               <Link
                                 to={`view/${id}`}
                                 style={{
@@ -442,9 +449,14 @@ export default function PatientRecordPage() {
                   )}
                 </Table>
               </TableContainer>
-              <EditModal open={isEditModalOpen} onClose={() => setEditModalOpen(false)} id={formID} data={editData}/>
+              <EditModal
+                open={isEditModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                id={formID}
+                data={editData}
+              />
             </Scrollbar>
-                    
+
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
@@ -456,7 +468,6 @@ export default function PatientRecordPage() {
             />
           </Card>
         )}
-        
       </Container>
     </>
   );

@@ -100,6 +100,7 @@ export default function Router() {
         { path: 'app', element: <ProtectedRoute ><UserDashboardAppPage /></ProtectedRoute> },
         { path: 'user', element:  <ProtectedRoute ><UserPage /></ProtectedRoute> },
         { path: 'goals', element: <ProtectedRoute ><GoalsPage /></ProtectedRoute> },
+        { path: 'staff', element:  <ProtectedRoute ><DoctorMidwifePage /></ProtectedRoute> },
         { path: 'pregnancy', element:  <ProtectedRoute ><PatientRecordPage /></ProtectedRoute> },
         { path: 'pregnancy/view/:id', element:  <ProtectedRoute ><ViewPage /></ProtectedRoute> },
       ],

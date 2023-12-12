@@ -64,7 +64,7 @@ const TABLE_HEAD = [
   { id: "contact", label: "Contact No.", alignRight: false },
   { id: "time", label: "Time Schedule", alignRight: false },
   { id: "day", label: "Day", alignRight: false },
-  { id: "act", label: "Action", alignRight: false },
+  { id: "act", label: "", alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -126,17 +126,12 @@ export default function DoctorMidwifePage() {
 
   const [editData, setEditData] = useState({});
 
-  const { selectedYear, setSelectedYear } = useContext(SelectYearContext);
-
   const { userData } = useContext(AuthContext);
 
   const nav = useNavigate();
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,13 +146,14 @@ export default function DoctorMidwifePage() {
           });
         });
         setStaffList(data);
+        setLoading(false);
       } catch (err) {
         console.error(err);
       }
     };
 
     fetchData();
-  }, [selectedYear]);
+  }, []);
 
   const deleteStaff = async (id) => {
     const staffRef = doc(db, "staff", id);
@@ -167,7 +163,7 @@ export default function DoctorMidwifePage() {
       hideProgressBar: false,
     });
     await deleteDoc(staffRef);
-    nav("/dashboard/staff")
+    nav("/dashboard/staff");
   };
 
   const handleEditModal = (id, data) => {
@@ -254,6 +250,7 @@ export default function DoctorMidwifePage() {
             onClick={() => setModalOpen(true)}
             variant="contained"
             startIcon={<Iconify icon="eva:plus-fill" />}
+            style={{ display: userData.role === "Admin" ? "block" : "none" }}
           >
             New Staff
           </Button>
@@ -362,25 +359,29 @@ export default function DoctorMidwifePage() {
                             </TableCell>
 
                             <TableCell align="left">
-                              <IconButton
-                                size="large"
-                                color="inherit"
-                                onClick={() => handleEditModal(id)}
-                              >
-                                <Iconify
-                                  icon={"material-symbols:edit-outline"}
-                                />
-                              </IconButton>
+                              {userData.role === "Admin" && (
+                                <>
+                                  <IconButton
+                                    size="large"
+                                    color="inherit"
+                                    onClick={() => handleEditModal(id)}
+                                  >
+                                    <Iconify
+                                      icon={"material-symbols:edit-outline"}
+                                    />
+                                  </IconButton>
 
-                              <IconButton
-                                size="large"
-                                color="inherit"
-                                onClick={() => deleteStaff(id)}
-                              >
-                                <Iconify
-                                  icon={"material-symbols:delete-outline"}
-                                />
-                              </IconButton>
+                                  <IconButton
+                                    size="large"
+                                    color="inherit"
+                                    onClick={() => deleteStaff(id)}
+                                  >
+                                    <Iconify
+                                      icon={"material-symbols:delete-outline"}
+                                    />
+                                  </IconButton>
+                                </>
+                              )}
 
                               {/* <Link
                                 to={`view/${id}`}

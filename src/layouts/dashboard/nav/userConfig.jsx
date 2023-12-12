@@ -18,6 +18,11 @@ const userConfig = [
     icon: <Iconify icon={'vaadin:records'}/>,
   },
   {
+    title: 'Doctor/Midwife',
+    path: '/officer/staff',
+    icon: <Iconify icon={'fluent:doctor-28-regular'}/>,
+  },
+  {
     title: 'Goals',
     path: '/officer/goals',
     icon: <Iconify icon={'octicon:goal-16'}/>,
